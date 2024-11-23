@@ -217,6 +217,7 @@ const handleLogout = () => {
 
     <Button
       variant="outline"
+      size="icon"
       onClick={() => setIsModalOpen(true)}
       className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
     >
