@@ -48,7 +48,7 @@ export default function RivalAnalysis() {
                 <CardTitle className="text-blue-600">Type Distribution</CardTitle>
                 <CardDescription>Breakdown of Pokémon types in the rival's team</CardDescription>
               </CardHeader>
-              <CardContent className="pt-2">
+              <CardContent className="pt-2 flex justify-center">
                 <ChartContainer
                   config={{
                     count: {
@@ -65,7 +65,7 @@ export default function RivalAnalysis() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        outerRadius={80}
+                        outerRadius={window.innerWidth < 640 ? 80 : 130} // CAMBIAR TAMAÑO RADIO SEGUN LA PANTALLA
                         fill="#8884d8"
                         dataKey="count"
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
@@ -97,7 +97,7 @@ export default function RivalAnalysis() {
                       color: 'hsl(var(--chart-2))',
                     },
                   }}
-                  className="h-[300px]"
+                  className="w-[350px] sm:w-[450px] md:w-[500px]" // CAMBIAR ANCHURA ESTADISTICA SEGUN LA PANTALLA
                 >
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={statData}>
@@ -115,6 +115,7 @@ export default function RivalAnalysis() {
                   </ResponsiveContainer>
                 </ChartContainer>
               </CardContent>
+
             </Card>
           )}
         </TabsContent>
