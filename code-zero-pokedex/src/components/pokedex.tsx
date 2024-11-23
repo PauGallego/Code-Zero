@@ -214,7 +214,7 @@ export default function Pokedex() {
         </div>
 
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-4 bg-[#d7d7d7] h-[55px]">
+          <TabsList className="grid w-full grid-cols-4 mb-4 bg-[#d7d7d7] h-[55px] pl-[30px] pr-[30px]">
             <TabsTrigger value="list" className="data-[state=active]:bg-red-500 data-[state=active]:text-white">
               <List size={16} className="mr-2" />
               List
@@ -246,9 +246,9 @@ export default function Pokedex() {
                     {filteredPokemons.length > 0 ? (
                       filteredPokemons.map((pokemon) => (
                         <div
-                          key={pokemon.id}
-                          className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow"
-                        >
+                        key={pokemon.id}
+                        className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray"
+                      >
                           <div className="flex items-center">
                             {pokemon.image && (
                               <img
