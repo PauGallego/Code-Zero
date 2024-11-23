@@ -1,70 +1,93 @@
-import React from 'react'
+import React from 'react';
 
 export default function PokedexView() {
     return (
-        <div className="bg-red-600 w-[400px] rounded-xl p-4 shadow-xl border-4 border-black mx-auto">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-4">
-                <div className="w-10 h-10 bg-cyan-400 border-4 border-black rounded-full"></div>
-                <h1 className="text-lg text-black font-bold text-center flex-grow">
-                    Pokédex of Anomalies
-                </h1>
-                <div className="relative w-8 h-8 bg-white border-4 border-black rounded-full">
-                    <div className="absolute w-3 h-3 bg-black rounded-full border-2 border-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
-                </div>
-            </div>
+        <div className="bg-[#F23030] w-[400px] h-[80vh] rounded-xl p-3 pt-0 shadow-xl border-4 border-black mx-auto flex flex-col items-center overflow-hidden">
 
             {/* Screen */}
-            <div className="bg-white border-4 border-black rounded-lg h-40 flex justify-center items-center text-gray-400 mb-4">
+            <div className='flex flex-row justify-between items-center border-black rounded-lg h-[12%] w-[90%] mb-0'>
+                <div>
+                    <button className="w-10 h-10 bg-blue-400 rounded-full"
+                        style={{
+                            backgroundImage: "url('musica.png')",
+                            backgroundSize: '80%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            padding: '5px',
+                            border: '2px solid black'
+                        }}
+                    >
+                    </button>
+                </div>
+                <div className='text-3xl'>
+                    <span>Pokedex de skibidi</span>
+                </div>
+                <div>
+                    <button className="w-10 h-10 bg-blue-400 rounded-full"
+                        style={{
+                            backgroundImage: "url('pokeball.png')",
+                            backgroundSize: '100%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                        }}
+                    >
+                    </button>
+                </div>
+            </div>
+            <div className="bg-white border-4 border-black rounded-lg h-[60%] w-[90%] flex justify-center items-center text-gray-400 mb-4">
                 <p>Insert Image or Information Here</p>
             </div>
 
             {/* Controls */}
-            <div className="bg-green-400 border-4 border-black rounded-lg p-4">
+            <div className="bg-[#636363] border-4 border-black rounded-lg p-2 w-[90%] h-[35%] flex flex-col justify-between">
                 {/* Info */}
-                <div className="space-y-2">
-                    <div className="flex flex-col">
-                        <label htmlFor="pokemonName" className="font-bold text-sm">
-                            Pokémon Name:
-                        </label>
-                        <input
-                            id="pokemonName"
-                            type="text"
-                            placeholder="Enter Pokémon Name"
-                            className="p-2 border-2 border-black rounded-md"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="pokemonType" className="font-bold text-sm">
-                            Type(s):
-                        </label>
-                        <input
-                            id="pokemonType"
-                            type="text"
-                            placeholder="Enter Type(s)"
-                            className="p-2 border-2 border-black rounded-md"
-                        />
-                    </div>
+                <div className="flex justify-between items-center  border-2 border-black bg-[#8CBF3F] rounded-xl px-2 text-black text-2xl h-auto">
+                    <span className="flex items-center justify-center">Charizart</span>
+                    <span className="flex items-center justify-center">Type</span>
                 </div>
 
-                {/* Description */}
-                <textarea
-                    id="description"
-                    placeholder="Put a description in here!"
-                    className="mt-4 p-2 border-2 border-black rounded-md w-full resize-none h-20"
-                ></textarea>
-
                 {/* Buttons */}
-                <div className="flex justify-between mt-4">
-                    <button className="w-10 h-10 bg-red-600 text-white font-bold rounded-full shadow-lg">
-                        X
-                    </button>
-                    <button className="w-10 h-10 bg-green-600 text-white font-bold rounded-full shadow-lg">
-                        ✔
-                    </button>
+                <div className="flex justify-between mt-1 h-full">
+                    {/* Dpad */}
+                    <div className="flex-grow relative overflow-hidden w-[20%]">
+                        <div
+                            style={{
+                                backgroundImage: "url('dpad.png')", // Reemplaza con la URL de tu imagen
+                                backgroundSize: 'contain',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                width: '100%',
+                                height: '100%',
+                                margin: '0px'
+                            }}
+                        ></div>
+                    </div>
+                    {/* Button Group */}
+                    <div className='flex bg-[#8DC643] w-[60%] rounded-sm border border-black'>
+                        
+                    </div>
+                    <div className="flex flex-col justify-between  h-full p-2 relative w-[20%]">
+                        <button
+                            className="w-full h-[50%] bg-red-600 text-white font-bold rounded-full shadow-lg"
+                            style={{
+                                alignSelf: 'flex-start',
+                            }}
+                        >
+                            X
+                        </button>
+                        <button
+                            className="w-full h-[50%] bg-green-600 text-white font-bold rounded-full shadow-lg"
+                            style={{
+                                alignSelf: 'flex-end',
+                            }}
+                        >
+                            ✔
+                        </button>
+                    </div>
+
+
                 </div>
             </div>
         </div>
-
-    )
+    );
 }
