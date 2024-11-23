@@ -18,8 +18,7 @@ const ApiCycleComponent: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<string>("name");
   const [error, setError] = useState<string | null>(null);
 
-  const specialImageUrl =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s";
+  const specialImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s";
 
   const fetchTeamData = async () => {
     const url = `${teamUrl}${teamId}`;
@@ -52,7 +51,7 @@ const ApiCycleComponent: React.FC = () => {
 
       const data = await response.json();
 
-      if (data.name === "Hackduck") {
+      if (data.name === "Cyberquack") {
         data.image = specialImageUrl;
       }
 
