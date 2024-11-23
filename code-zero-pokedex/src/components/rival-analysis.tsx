@@ -8,24 +8,24 @@ import { useState, useEffect } from 'react'
 
 // Hook para manejar el radio responsivo
 function useResponsiveOuterRadius() {
-  const [outerRadius, setOuterRadius] = useState(130); // Valor por defecto para pantallas grandes (PC)
+  const [outerRadius, setOuterRadius] = useState(130);
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
-        setOuterRadius(80);  // Móvil
+        setOuterRadius(80);  // ********* MOVIL ********* //
       } else if (window.innerWidth < 1024) {
-        setOuterRadius(100);  // Tablet
+        setOuterRadius(100);  // ********* TABLET ********* //
       } else {
-        setOuterRadius(130);  // PC (pantallas grandes)
+        setOuterRadius(130);  // // ********* PC ********* //
       }
     };
 
-    handleResize();  // Establece el valor al cargar la página
+    handleResize();  
     window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize); // Limpiar el event listener
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -53,8 +53,9 @@ const statData = [
 const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FED766', '#2AB7CA', '#F0B67F']
 
 export default function RivalAnalysis() {
-  const [activeTab, setActiveTab] = useState('type') // Track the active tab
-  const outerRadius = useResponsiveOuterRadius();  // Obtenemos el outerRadius responsivo
+  // ***** LLAMAR RESPONISVE ***** //
+  const [activeTab, setActiveTab] = useState('type') 
+  const outerRadius = useResponsiveOuterRadius();
 
   return (
     <div className="space-y-4">
@@ -93,7 +94,7 @@ export default function RivalAnalysis() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        outerRadius={outerRadius} // Usamos el valor responsivo de outerRadius
+                        outerRadius={outerRadius}
                         fill="#8884d8"
                         dataKey="count"
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
