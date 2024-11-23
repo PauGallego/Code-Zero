@@ -3,6 +3,28 @@
 @tailwind utilities;
  
 @layer base {
+
+  @font-face {
+    font-family: 'PokemonDS';
+    src: url('/pokemon-ds-font.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  /* Aplica la fuente globalmente */
+  html, body {
+    font-family: 'PokemonDS', sans-serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply text-foreground;
+    background: url('/bkg.png') no-repeat center center fixed;
+    background-size: cover;
+  }
+  
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
