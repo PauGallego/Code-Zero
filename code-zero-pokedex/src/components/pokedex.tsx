@@ -187,66 +187,66 @@ const handleLogout = () => {
       />
 
       <CardContent className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <motion.h1
-            className="text-4xl font-bold text-red-500 drop-shadow-lg"
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-           <h1>Pokedex</h1>
-          </motion.h1>
-          <div className="flex items-center space-x-4">
-          
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsScanning(true)}
-              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
-            >
-              <QrCode size={24} className="text-red-500" />
-            </Button>
+      <div className="flex flex-col items-center md:flex-row md:justify-between md:items-center mb-4">
+  <motion.h1
+    className="text-4xl font-bold text-red-500 drop-shadow-lg mb-4 md:mb-0 text-center"
+    initial={{ y: -20, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ duration: 0.5 }}
+  >
+    Pokedex
+  </motion.h1>
+  <div className="flex items-center justify-center space-x-4">
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => setIsScanning(true)}
+      className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
+    >
+      <QrCode size={24} className="text-red-500" />
+    </Button>
 
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => toggleAIAssistant()}
-              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
-            >
-              <Bot size={24} className="text-red-500" />
-            </Button>
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => toggleAIAssistant()}
+      className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
+    >
+      <Bot size={24} className="text-red-500" />
+    </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => setIsModalOpen(true)}
-              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
-            >
-              <Mic size={24} className="text-red-500" />
-            </Button>
+    <Button
+      variant="outline"
+      onClick={() => setIsModalOpen(true)}
+      className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
+    >
+      <Mic size={24} className="text-red-500" />
+    </Button>
 
-            {recognizedText && (
-              <p className="mt-4 text-gray-700">
-                Last Recognized Text: <strong>{recognizedText}</strong>
-              </p>
-            )}
+    {recognizedText && (
+      <p className="mt-4 text-gray-700 text-center">
+        Last Recognized Text: <strong>{recognizedText}</strong>
+      </p>
+    )}
 
-            <VoiceRecognitionModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onRecognize={handleRecognize}
-            />
-              {/* Botón de Logout */}
-              <Button
-              variant="outline"
-              size="icon"
-              onClick={handleLogout}
-              className="rounded-lg border-2 border-red-500 hover:bg-red-100 bg-white/90"
-            >
-              <LogOut size={24} className="text-red-500" />
-            </Button>
+    <VoiceRecognitionModal
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      onRecognize={handleRecognize}
+    />
 
-          </div>
-        </div>
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={handleLogout}
+      className="rounded-lg border-2 border-red-500 hover:bg-red-100 bg-white/90"
+    >
+      <LogOut size={24} className="text-red-500" />
+    </Button>
+  </div>
+</div>
+
+
 
         <div className="flex flex-col md:flex-row items-center mb-6 gap-4">
         <div className="relative flex-1 w-full">
@@ -284,25 +284,37 @@ const handleLogout = () => {
 
 
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-4 bg-[#d7d7d7] h-[55px] pl-[30px] pr-[30px]">
-            <TabsTrigger value="list" className="data-[state=active]:bg-red-500 data-[state=active]:text-white">
-              <List size={16} className="mr-2" />
-              List
-            </TabsTrigger>
-            <TabsTrigger value="grid" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
-              <Grid size={16} className="mr-2" />
-              Grid
-            </TabsTrigger>
-            <TabsTrigger value="team" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
-  <Map size={16} className="mr-2" />
-  Zonas
-</TabsTrigger>
-<TabsTrigger value="rival" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white">
-  <Sword size={16} className="mr-2" />
-  Torneos
-</TabsTrigger>
+        <TabsList className="flex md:grid md:grid-cols-4 justify-between items-center w-full mb-4 bg-[#d7d7d7] h-[40px] md:h-[55px] p-2 ">
+  <TabsTrigger
+    value="list"
+    className="flex items-center justify-center data-[state=active]:bg-red-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+  >
+    <List size={24} className="md:mr-2" />
+    <span className="hidden md:inline">List</span>
+  </TabsTrigger>
+  <TabsTrigger
+    value="grid"
+    className="flex items-center justify-center data-[state=active]:bg-blue-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+  >
+    <Grid size={24} className="md:mr-2" />
+    <span className="hidden md:inline">Grid</span>
+  </TabsTrigger>
+  <TabsTrigger
+    value="team"
+    className="flex items-center justify-center data-[state=active]:bg-green-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+  >
+    <Map size={24} className="md:mr-2" />
+    <span className="hidden md:inline">Zonas</span>
+  </TabsTrigger>
+  <TabsTrigger
+    value="rival"
+    className="flex items-center justify-center data-[state=active]:bg-yellow-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+  >
+    <Sword size={24} className="md:mr-2" />
+    <span className="hidden md:inline">Torneos</span>
+  </TabsTrigger>
+</TabsList>
 
-          </TabsList>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
