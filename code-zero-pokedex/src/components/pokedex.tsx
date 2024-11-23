@@ -32,16 +32,17 @@ export default function Pokedex() {
   }
 
   return (
-    <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-gradient-to-br from-red-500 to-yellow-400 shadow-xl rounded-xl overflow-hidden">
+    <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#FAB12F] shadow-xl rounded-xl overflow-hidden">
       <CardContent className="p-6">
         <motion.h1
-          className="text-4xl font-bold mb-6 text-center text-white drop-shadow-lg"
+          className="text-4xl font-bold mb-6 text-center text-red-500 drop-shadow-lg"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
           Pokédex
         </motion.h1>
+
         <div className="flex items-center mb-6 gap-2">
           <div className="relative flex-1">
             <Input
@@ -49,7 +50,7 @@ export default function Pokedex() {
               placeholder="Search Pokémon..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full pl-10 pr-10 border-2 border-yellow-300 focus:border-yellow-500 rounded-full bg-white/90"
+              className="w-full pl-10 pr-10 bg-white/90"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400" size={20} />
             <Button
@@ -69,20 +70,20 @@ export default function Pokedex() {
           </Button>
         </div>
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-4 bg-white/90 rounded-full p-1">
-            <TabsTrigger value="list" className="rounded-full data-[state=active]:bg-red-500 data-[state=active]:text-white">
+          <TabsList className="grid w-full grid-cols-4 mb-4 bg-white/90 h-[55px]">
+            <TabsTrigger value="list" className="data-[state=active]:bg-red-500 data-[state=active]:text-white">
               <List size={16} className="mr-2" />
               List
             </TabsTrigger>
-            <TabsTrigger value="grid" className="rounded-full data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+            <TabsTrigger value="grid" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
               <Grid size={16} className="mr-2" />
               Grid
             </TabsTrigger>
-            <TabsTrigger value="team" className="rounded-full data-[state=active]:bg-green-500 data-[state=active]:text-white">
+            <TabsTrigger value="team" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
               <Users size={16} className="mr-2" />
               Team
             </TabsTrigger>
-            <TabsTrigger value="rival" className="rounded-full data-[state=active]:bg-yellow-500 data-[state=active]:text-white">
+            <TabsTrigger value="rival" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white">
               <BarChart2 size={16} className="mr-2" />
               Rival
             </TabsTrigger>
