@@ -1,48 +1,71 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { QrCode, Mic, Search, Users, BarChart2, Bot, List, Grid } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import RivalAnalysis from './rival-analysis'
-import TeamManagement from './team-management'
-import AIAssistant from './ai-assistant'
-import VoiceRecognitionModal from './voicerecon'
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { QrCode, Mic, Search, Users, BarChart2, Bot, List, Grid, LogOut } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import RivalAnalysis from './rival-analysis';
+import TeamManagement from './team-management';
+import AIAssistant from './ai-assistant';
+import VoiceRecognitionModal from './voicerecon';
 
 export default function Pokedex() {
-  const teamUrl = "https://hackeps-poke-backend.azurewebsites.net/teams/"
-  const pokemonUrl = "https://hackeps-poke-backend.azurewebsites.net/pokemons/"
-  const teamId = "63bf06cf-e720-4134-9252-f195668c6048"
+  const teamUrl = 'https://hackeps-poke-backend.azurewebsites.net/teams/';
+  const pokemonUrl = 'https://hackeps-poke-backend.azurewebsites.net/pokemons/';
+  const teamId = '63bf06cf-e720-4134-9252-f195668c6048';
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [recognizedText, setRecognizedText] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [recognizedText, setRecognizedText] = useState('');
 
   const handleRecognize = (text: string) => {
-    setRecognizedText(text)
-    console.log('Recognized Text:', text)
-  }
+    setRecognizedText(text);
+    console.log('Recognized Text:', text);
+  };
 
   const toggleAIAssistant = () => {
     setIsAIAssistantOpen((prev) => !prev);
     console.log('AI Assistant toggled:', !isAIAssistantOpen);
   };
-  
 
-  const [teamData, setTeamData] = useState<any>(null)
-  const [pokemonDetails, setPokemonDetails] = useState<any[]>([])
-  const [pokemonCounts, setPokemonCounts] = useState<{ [key: string]: number }>({})
-  const [filteredPokemons, setFilteredPokemons] = useState<any[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sortOrder, setSortOrder] = useState('name') // Default sort by name
-  const [isScanning, setIsScanning] = useState(false)
-  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('list')
+  const [teamData, setTeamData] = useState<any>(null);
+  const [pokemonDetails, setPokemonDetails] = useState<any[]>([]);
+  const [pokemonCounts, setPokemonCounts] = useState<{ [key: string]: number }>({});
+  const [filteredPokemons, setFilteredPokemons] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('name'); // Default sort by name
+  const [isScanning, setIsScanning] = useState(false);
+  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('list');
 
-  const specialImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s"
-  const specialImageUrl2 = "https://canarddebain.com/cdn/shop/products/CanardPerroquetPirate-Lilalu02.png?v=1640250617"
+  const specialImageUrl =
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s';
+  const specialImageUrl2 =
+    'https://canarddebain.com/cdn/shop/products/CanardPerroquetPirate-Lilalu02.png?v=1640250617';
+
+    if (localStorage.getItem('login') == null) {
+  // Pedimos al usuario que introduzca su Team ID
+  const teamId = prompt('Por favor, introduce tu Team ID para iniciar sesión:');
+  if (teamId) {
+    // Guardamos el Team ID en el localStorage como 'login'
+    localStorage.setItem('login', teamId);
+    location.reload(); // Recargamos la página para aplicar cambios
+  } else {
+    alert('Debes introducir un Team ID para continuar.');
+  }
+}
+
+// Función para cerrar sesión
+const handleLogout = () => {
+  console.log('Logging out...');
+  // Eliminamos el dato almacenado con la clave 'login'
+  localStorage.removeItem('login');
+  alert('¡Sesión cerrada!');
+  location.reload(); // Recargamos la página para aplicar cambios
+};
+    
 
   const fetchTeamData = async () => {
     try {
@@ -157,12 +180,11 @@ export default function Pokedex() {
   }, [searchQuery, sortOrder, pokemonDetails, pokemonCounts])
 
   return (
-    
     <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
-                    <AIAssistant
-                    isOpen={isAIAssistantOpen}
-                    onClose={() => setIsAIAssistantOpen(false)} // Asegúrate de que esta función está correctamente definida
-                  />
+      <AIAssistant
+        isOpen={isAIAssistantOpen}
+        onClose={() => setIsAIAssistantOpen(false)} // Asegúrate de que esta función está correctamente definida
+      />
 
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
@@ -175,6 +197,7 @@ export default function Pokedex() {
             Pokédex
           </motion.h1>
           <div className="flex items-center space-x-4">
+          
             <Button
               variant="outline"
               size="icon"
@@ -183,37 +206,45 @@ export default function Pokedex() {
             >
               <QrCode size={24} className="text-red-500" />
             </Button>
+
             <Button
               variant="outline"
               size="icon"
               onClick={() => toggleAIAssistant()}
               className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
             >
-
-
               <Bot size={24} className="text-red-500" />
             </Button>
-         
 
             <Button
-        variant="outline"
-        onClick={() => setIsModalOpen(true)}
-        className="rounded-lg"
-      >
-          <Mic size={24} className="text-red-500" />
-          </Button>
+              variant="outline"
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
+            >
+              <Mic size={24} className="text-red-500" />
+            </Button>
 
-      {recognizedText && (
-        <p className="mt-4 text-gray-700">
-          Last Recognized Text: <strong>{recognizedText}</strong>
-        </p>
-      )}
+            {recognizedText && (
+              <p className="mt-4 text-gray-700">
+                Last Recognized Text: <strong>{recognizedText}</strong>
+              </p>
+            )}
 
-      <VoiceRecognitionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onRecognize={handleRecognize}
-      />
+            <VoiceRecognitionModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onRecognize={handleRecognize}
+            />
+              {/* Botón de Logout */}
+              <Button
+              variant="outline"
+              size="icon"
+              onClick={handleLogout}
+              className="rounded-lg border-2 border-red-500 hover:bg-red-100 bg-white/90"
+            >
+              <LogOut size={24} className="text-red-500" />
+            </Button>
+
           </div>
         </div>
 
@@ -379,9 +410,9 @@ export default function Pokedex() {
             </motion.div>
           </AnimatePresence>
         </Tabs>
-      </CardContent>
+        </CardContent>
       {isScanning && <div>QR Scanner Placeholder</div>}
       {isAIAssistantOpen && <div>AI Assistant Placeholder</div>}
     </Card>
-  )
+  );
 }
