@@ -19,6 +19,7 @@ const ApiCycleComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const specialImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s";
+  const specialImageUrl2 = "https://canarddebain.com/cdn/shop/products/CanardPerroquetPirate-Lilalu02.png?v=1640250617";
 
   const fetchTeamData = async () => {
     const url = `${teamUrl}${teamId}`;
@@ -53,6 +54,10 @@ const ApiCycleComponent: React.FC = () => {
 
       if (data.name === "Cyberquack") {
         data.image = specialImageUrl;
+      }
+
+      if (data.name === "Hackduck") {
+        data.image = specialImageUrl2;
       }
 
       setPokemonDetails((prev) =>
@@ -215,15 +220,19 @@ const ApiCycleComponent: React.FC = () => {
       <h1>Team Info</h1>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
       {teamData ? (
-        <div>
-          <h2>{teamData.name}</h2>
-          <p>PVE Score: {teamData.pve_score}</p>
-          <p>PVP Score: {teamData.pvp_score}</p>
-          <p>Pokedex Score: {teamData.pokedex_score}</p>
-        </div>
-      ) : (
-        <p>Loading team data...</p>
-      )}
+  <div>
+    <h2>{teamData.name}</h2>
+    <p>PVE Score: {teamData.pve_score}</p>
+    <p>PVP Score: {teamData.pvp_score}</p>
+    <p>Pokedex Score: {teamData.pokedex_score}</p>
+    <p>
+      <strong>Total Pokémon Captured:</strong> {teamData.captured_pokemons.length}
+    </p>
+  </div>
+) : (
+  <p>Loading team data...</p>
+)}
+
       <div style={{ marginTop: "20px", marginBottom: "20px" }}>
         <input
           type="text"
