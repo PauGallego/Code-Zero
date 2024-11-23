@@ -34,7 +34,7 @@ export default function Pokedex() {
   return (
     <Card className="w-full max-w-4xl mx-auto bg-gradient-to-br from-red-500 to-yellow-400 shadow-xl rounded-xl overflow-hidden">
       <CardContent className="p-6">
-        <motion.h1 
+        <motion.h1
           className="text-4xl font-bold mb-6 text-center text-white drop-shadow-lg"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -95,18 +95,19 @@ export default function Pokedex() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <TabsContent value="list"className={activeTab === 'list' ? '' : 'hidden'}>
-                <PokemonList view="list" searchQuery={searchQuery} />
+              <TabsContent value="list">
+                {activeTab === 'list' && <PokemonList view="list" searchQuery={searchQuery} />}
               </TabsContent>
-              <TabsContent value="grid"className={activeTab === 'grid' ? '' : 'hidden'}>
-                <PokemonList view="grid" searchQuery={searchQuery} />
+              <TabsContent value="grid">
+                {activeTab === 'grid' && <PokemonList view="grid" searchQuery={searchQuery} />}
               </TabsContent>
               <TabsContent value="team">
-                <TeamManagement />
+                {activeTab === 'team' && <TeamManagement />}
               </TabsContent>
               <TabsContent value="rival">
-                <RivalAnalysis />
+                {activeTab === 'rival' && <RivalAnalysis />}
               </TabsContent>
+
             </motion.div>
           </AnimatePresence>
         </Tabs>
