@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { QrCode, Mic, Search, Users, BarChart2, Bot, List, Grid, LogOut } from 'lucide-react';
+import { QrCode, Mic, Search, Users, BarChart2, Bot, List, Grid, LogOut, Sword, Map } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import RivalAnalysis from './rival-analysis';
 import TeamManagement from './team-management';
@@ -294,13 +294,14 @@ const handleLogout = () => {
               Grid
             </TabsTrigger>
             <TabsTrigger value="team" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
-              <Users size={16} className="mr-2" />
-              Team
-            </TabsTrigger>
-            <TabsTrigger value="rival" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white">
-              <BarChart2 size={16} className="mr-2" />
-              Rival
-            </TabsTrigger>
+  <Map size={16} className="mr-2" />
+  Zonas
+</TabsTrigger>
+<TabsTrigger value="rival" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white">
+  <Sword size={16} className="mr-2" />
+  Torneos
+</TabsTrigger>
+
           </TabsList>
           <AnimatePresence mode="wait">
             <motion.div
