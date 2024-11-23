@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 
 const ApiCycleComponentZones: React.FC = () => {
   const pokemonUrl = "https://hackeps-poke-backend.azurewebsites.net/pokemons";
+  const zoneUrl = "https://hackeps-poke-backend.azurewebsites.net/zones/"; // Base URL para obtener detalles de las zonas
 
   const [pokemonDetails, setPokemonDetails] = useState<any[]>([]);
+  const [zonesData, setZonesData] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState<string | null>(null);
 
   // Función para obtener los detalles del Pokémon
@@ -28,9 +30,26 @@ const ApiCycleComponentZones: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchPokemonDetails();
-  }, []);
+  // Función para obtener el nombre de la zona a partir del zone_id
+  const fetchZoneName = async (zoneId: string) => {
+    try {
+      const response = await fetch(`${zoneUrl}${zoneId}`, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+
+      const zoneData = await response.json();
+      setZonesData((prevZones) => ({
+        ...prevZones,
+        [zoneId]: zoneData.name, // Almacenamos el nombre de la zona usando el ID de la zona
+      }));
+    } catch (err: any) {
+      console.error(`Error fetching zone data for zone ID ${zoneId}:`, err.message);
+    }
+  };
 
   // Función para organizar los Pokémon según las zonas de encuentro
   const organizePokemonsByLocation = (pokemons: any[]) => {
@@ -38,13 +57,20 @@ const ApiCycleComponentZones: React.FC = () => {
 
     // Organizar Pokémon por sus zonas de encuentro
     pokemons.forEach((pokemon) => {
-      pokemon.location_area_encounters.forEach((location: string) => {
-        if (!locationMap[location]) {
-          locationMap[location] = [];
+      pokemon.location_area_encounters.forEach((zoneId: string) => {
+        // Si aún no hemos guardado el nombre de la zona, lo solicitamos
+        if (!zonesData[zoneId]) {
+          fetchZoneName(zoneId);
         }
+
+        // Si no existe la zona en el mapa, la añadimos
+        if (!locationMap[zoneId]) {
+          locationMap[zoneId] = [];
+        }
+
         // Añadir el Pokémon a la zona, asegurándonos de que no se repita en la misma zona
-        if (!locationMap[location].some((p: any) => p.id === pokemon.id)) {
-          locationMap[location].push(pokemon);
+        if (!locationMap[zoneId].some((p: any) => p.id === pokemon.id)) {
+          locationMap[zoneId].push(pokemon);
         }
       });
     });
@@ -55,17 +81,23 @@ const ApiCycleComponentZones: React.FC = () => {
   // Organizar Pokémon por las zonas
   const pokemonByLocation = organizePokemonsByLocation(pokemonDetails);
 
+  useEffect(() => {
+    fetchPokemonDetails();
+  }, []);
+
   return (
     <div>
       <h1>All Pokemons</h1>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
       {Object.keys(pokemonByLocation).length > 0 ? (
-        Object.keys(pokemonByLocation).map((location, index) => (
+        Object.keys(pokemonByLocation).map((zoneId, index) => (
           <div key={index}>
-            <h2>Location: {location}</h2>
+            <h2>
+              Location: {zonesData[zoneId] || "Loading..."} {/* Mostramos el nombre de la zona, o "Loading..." si aún no se ha cargado */}
+            </h2>
             <ul>
-              {pokemonByLocation[location].map((pokemon) => (
+              {pokemonByLocation[zoneId].map((pokemon) => (
                 <li key={pokemon.id}>
                   <p>
                     <strong>ID:</strong> {pokemon.id}
