@@ -32,7 +32,7 @@ export default function Pokedex() {
   }
 
   return (
-    <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#FAB12F] shadow-xl rounded-xl overflow-hidden">
+    <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
       <CardContent className="p-6">
         <motion.h1
           className="text-4xl font-bold mb-6 text-center text-red-500 drop-shadow-lg"
@@ -62,15 +62,15 @@ export default function Pokedex() {
               <Mic className="text-red-400" size={20} />
             </Button>
           </div>
-          <Button variant="outline" size="icon" onClick={handleQRScan} className="rounded-full border-2 border-yellow-300 hover:bg-yellow-100 bg-white/90">
+          <Button variant="outline" size="icon" onClick={handleQRScan} className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90">
             <QrCode size={24} className="text-red-500" />
           </Button>
-          <Button variant="outline" size="icon" onClick={() => setIsAIAssistantOpen(true)} className="rounded-full border-2 border-yellow-300 hover:bg-yellow-100 bg-white/90">
+          <Button variant="outline" size="icon" onClick={() => setIsAIAssistantOpen(true)} className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90">
             <Bot size={24} className="text-red-500" />
           </Button>
         </div>
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-4 bg-white/90 h-[55px]">
+          <TabsList className="grid w-full grid-cols-4 mb-4  bg-[#d7d7d7] h-[55px]">
             <TabsTrigger value="list" className="data-[state=active]:bg-red-500 data-[state=active]:text-white">
               <List size={16} className="mr-2" />
               List

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { Button } from '@/components/ui/button'
 
 interface Pokemon {
   id: number
@@ -56,15 +57,26 @@ export default function PokemonList({ view, searchQuery }: PokemonListProps) {
 
   return (
     <div className="h-screen flex flex-col">
-      <div className="mb-4 flex justify-end">
+      <div className="mb-4 flex justify-around">
+        <div className='w-[50%]'>
+          <Button
+            variant="ghost"
+            size="lg"
+            className='bg-[#d7d7d7] w-full'
+          // onClick={}
+          >
+            Evolucionar todos
+          </Button>
+        </div>
         <Select onValueChange={setSortBy} defaultValue={sortBy}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[50%]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="name">Name</SelectItem>
             <SelectItem value="type">Type</SelectItem>
-            <SelectItem value="level">Level</SelectItem>
+            <SelectItem value="level">Count</SelectItem>
+            <SelectItem value="level">Id</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -83,10 +95,11 @@ export default function PokemonList({ view, searchQuery }: PokemonListProps) {
               whileTap={{ scale: 0.95 }}
             >
               <Card
-                className={`overflow-hidden transition-shadow hover:shadow-lg ${typeColors[pokemon.type]} ${
-                  view === 'list' ? 'flex items-center' : ''
-                }`}
+                className={`overflow-hidden transition-shadow hover:shadow-lg ${typeColors[pokemon.type]} ${view === 'list' ? 'flex items-center' : ''
+                  }`}
               >
+                
+                <CardContent className={`p-4 ${view === 'list' ? 'flex-grow' : 'pt-0'}`}>
                 <CardHeader className={`p-4 ${view === 'list' ? 'flex-shrink-0 w-1/4' : ''}`}>
                   <CardTitle className="text-lg flex items-center justify-between text-white">
                     <span>{pokemon.name}</span>
@@ -110,11 +123,9 @@ export default function PokemonList({ view, searchQuery }: PokemonListProps) {
                     </motion.div>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className={`p-4 ${view === 'list' ? 'flex-grow' : 'pt-0'}`}>
                   <div
-                    className={`flex items-center ${
-                      view === 'list' ? 'justify-between' : 'flex-col sm:flex-row'
-                    } gap-4`}
+                    className={`flex items-center ${view === 'list' ? 'justify-between' : 'flex-col sm:flex-row'
+                      } gap-4`}
                   >
                     <div className="relative">
                       <Image
@@ -133,7 +144,19 @@ export default function PokemonList({ view, searchQuery }: PokemonListProps) {
                       <p className="text-sm font-semibold">ID: #{pokemon.id.toString().padStart(3, '0')}</p>
                     </div>
                   </div>
+                  
+                <div className='h-full flex justify-center'>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className='bg-[#d7d7d7] w-full'
+                  // onClick={}
+                  >
+                    Evolucionar
+                  </Button>
+                </div>
                 </CardContent>
+          
               </Card>
             </motion.div>
           ))}
