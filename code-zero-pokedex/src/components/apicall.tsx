@@ -15,9 +15,11 @@ const ApiCycleComponent: React.FC = () => {
   const [filteredPokemons, setFilteredPokemons] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showDuplicatesOnly, setShowDuplicatesOnly] = useState<boolean>(false);
+  const [sortOrder, setSortOrder] = useState<string>("name");
   const [error, setError] = useState<string | null>(null);
 
-  const specialImageUrl = "https://solsolete.es/files/product_images/2024/02/05/Patito%20ba%C3%B1o%20TOlo%C3%A7.jpg";
+  const specialImageUrl =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s";
 
   const fetchTeamData = async () => {
     const url = `${teamUrl}${teamId}`;
@@ -31,10 +33,8 @@ const ApiCycleComponent: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log("Team data fetched successfully:", data);
       setTeamData(data);
     } catch (err: any) {
-      console.error("Error fetching team data:", err.message);
       setError(err.message);
     }
   };
@@ -52,12 +52,9 @@ const ApiCycleComponent: React.FC = () => {
 
       const data = await response.json();
 
-      // Check for Hackduck and assign the special image URL
       if (data.name === "Hackduck") {
         data.image = specialImageUrl;
       }
-
-      console.log(`Pokemon data for ID ${pokemonId} fetched successfully:`, data);
 
       setPokemonDetails((prev) =>
         prev.find((pokemon) => pokemon.id === data.id)
@@ -65,7 +62,7 @@ const ApiCycleComponent: React.FC = () => {
           : [...prev, data]
       );
     } catch (err: any) {
-      console.error(`Error fetching data for Pokemon ID ${pokemonId}:`, err.message);
+      console.error(err.message);
     }
   };
 
@@ -81,7 +78,7 @@ const ApiCycleComponent: React.FC = () => {
 
     const url = `${pokemonUrl}${pokemonId}/evolve`;
     const payload = {
-      pokemon_uuid_list: duplicates.slice(0, 3), // Take only 3 duplicates
+      pokemon_uuid_list: duplicates.slice(0, 3), // Take the first 3 duplicates
       team_id: teamId,
     };
 
@@ -93,34 +90,75 @@ const ApiCycleComponent: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Error HTTP: ${response.status}`);
+        throw new Error(`Failed to evolve Pokémon ${pokemonId}.`);
       }
 
-      const data = await response.json();
-      console.log(`Pokemon evolved successfully:`, data);
+      console.log(`Pokemon ${pokemonId} evolved successfully.`);
       alert(`Pokemon ${pokemonId} evolved successfully!`);
+
+      // Refetch team data to update the list
+      await fetchTeamData();
     } catch (err: any) {
-      console.error(`Error evolving Pokémon with ID ${pokemonId}:`, err.message);
+      console.error(`Error evolving Pokémon ${pokemonId}:`, err.message);
       alert(`Error evolving Pokémon ${pokemonId}. Please try again.`);
     }
   };
 
   const evolveAll = async () => {
-    const evolvablePokemons = Object.entries(pokemonCounts)
-      .filter(([pokemonId, count]) => count >= 3)
-      .map(([pokemonId]) => pokemonId);
+    if (!teamData || !teamData.captured_pokemons) {
+      alert("No team data available.");
+      return;
+    }
+
+    // Group captured Pokémon by their `pokemon_id` and count occurrences
+    const duplicatesMap: { [key: string]: string[] } = {};
+    teamData.captured_pokemons.forEach((pokemon: { id: string; pokemon_id: string }) => {
+      if (!duplicatesMap[pokemon.pokemon_id]) {
+        duplicatesMap[pokemon.pokemon_id] = [];
+      }
+      duplicatesMap[pokemon.pokemon_id].push(pokemon.id);
+    });
+
+    // Filter Pokémon that have at least 3 duplicates
+    const evolvablePokemons = Object.entries(duplicatesMap).filter(
+      ([pokemonId, ids]) =>
+        ids.length >= 3 &&
+        pokemonDetails.find((p) => p.id === pokemonId)?.can_evolve // Check if the Pokémon can evolve
+    );
 
     if (evolvablePokemons.length === 0) {
       alert("No Pokémon available to evolve.");
       return;
     }
 
-    for (const pokemonId of evolvablePokemons) {
-      await evolvePokemon(pokemonId); // Sequentially evolve each Pokémon
+    for (const [pokemonId, ids] of evolvablePokemons) {
+      const payload = {
+        pokemon_uuid_list: ids.slice(0, 3), // Take the first 3 duplicates
+        team_id: teamId,
+      };
+
+      try {
+        const url = `${pokemonUrl}${pokemonId}/evolve`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to evolve Pokémon ${pokemonId}.`);
+        }
+
+        console.log(`Pokemon ${pokemonId} evolved successfully.`);
+      } catch (err: any) {
+        console.error(`Error evolving Pokémon ${pokemonId}:`, err.message);
+      }
     }
 
     alert("All eligible Pokémon have been evolved.");
-    window.location.reload(); // Reload the page to reflect changes
+
+    // Refetch team data to update the list
+    await fetchTeamData();
   };
 
   useEffect(() => {
@@ -133,14 +171,12 @@ const ApiCycleComponent: React.FC = () => {
 
   useEffect(() => {
     if (teamData && teamData.captured_pokemons) {
-      // Count the occurrences of each Pokémon ID
       const counts: { [key: string]: number } = {};
       teamData.captured_pokemons.forEach((pokemon: { pokemon_id: string }) => {
         counts[pokemon.pokemon_id] = (counts[pokemon.pokemon_id] || 0) + 1;
       });
       setPokemonCounts(counts);
 
-      // Fetch details only once for each unique Pokémon ID
       const uniquePokemonIds = Object.keys(counts);
       uniquePokemonIds.forEach((pokemonId) => {
         fetchPokemonDetails(pokemonId);
@@ -149,7 +185,6 @@ const ApiCycleComponent: React.FC = () => {
   }, [teamData]);
 
   useEffect(() => {
-    // Filter pokemons based on search query and duplicate filter
     const filtered = pokemonDetails.filter((pokemon) => {
       const isDuplicate = (pokemonCounts[pokemon.id] || 1) > 1;
       const matchesSearch = pokemon.name
@@ -157,8 +192,24 @@ const ApiCycleComponent: React.FC = () => {
         .includes(searchQuery.toLowerCase());
       return matchesSearch && (!showDuplicatesOnly || isDuplicate);
     });
-    setFilteredPokemons(filtered);
-  }, [searchQuery, showDuplicatesOnly, pokemonDetails, pokemonCounts]);
+
+    const sorted = filtered.sort((a, b) => {
+      if (sortOrder === "count") {
+        return (pokemonCounts[b.id] || 0) - (pokemonCounts[a.id] || 0);
+      } else if (sortOrder === "type") {
+        return (a.types[0]?.type.name || "").localeCompare(
+          b.types[0]?.type.name || ""
+        );
+      } else if (sortOrder === "name") {
+        return a.name.localeCompare(b.name);
+      } else if (sortOrder === "id") {
+        return a.id - b.id;
+      }
+      return 0;
+    });
+
+    setFilteredPokemons(sorted);
+  }, [searchQuery, showDuplicatesOnly, pokemonDetails, pokemonCounts, sortOrder]);
 
   return (
     <div>
@@ -188,21 +239,22 @@ const ApiCycleComponent: React.FC = () => {
             borderRadius: "5px",
           }}
         />
-        <button
-          onClick={() => setShowDuplicatesOnly((prev) => !prev)}
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
           style={{
-            padding: "10px 20px",
+            padding: "10px",
             fontSize: "16px",
-            cursor: "pointer",
-            border: "none",
+            marginLeft: "10px",
+            border: "1px solid #ccc",
             borderRadius: "5px",
-            backgroundColor: showDuplicatesOnly ? "#007bff" : "#ccc",
-            color: "#fff",
-            marginRight: "10px",
           }}
         >
-          {showDuplicatesOnly ? "Show All" : "Show Duplicates Only"}
-        </button>
+          <option value="name">Sort by Name</option>
+          <option value="count">Sort by Count</option>
+          <option value="type">Sort by Type</option>
+          <option value="id">Sort by ID</option>
+        </select>
         <button
           onClick={evolveAll}
           style={{
@@ -213,17 +265,18 @@ const ApiCycleComponent: React.FC = () => {
             borderRadius: "5px",
             backgroundColor: "#28a745",
             color: "#fff",
+            marginLeft: "10px",
           }}
         >
           Evolve All
         </button>
       </div>
-      <h1>Captured Pokemons</h1>
+      <h1>Captured Pokémons</h1>
       {filteredPokemons.length > 0 ? (
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
             gap: "20px",
           }}
         >
@@ -233,7 +286,7 @@ const ApiCycleComponent: React.FC = () => {
               style={{
                 border: "1px solid #ccc",
                 borderRadius: "10px",
-                padding: "10px",
+                padding: "20px",
                 textAlign: "center",
                 backgroundColor: "#f9f9f9",
               }}
@@ -243,33 +296,39 @@ const ApiCycleComponent: React.FC = () => {
                 <img
                   src={pokemon.image}
                   alt={`Pokemon ${pokemon.name}`}
-                  style={{ width: "100px", height: "100px", marginBottom: "10px" }}
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    objectFit: "contain",
+                  }}
                 />
               )}
               <p>
                 <strong>Count:</strong> {pokemonCounts[pokemon.id] || 1}
+                <br />
+                <strong>ID:</strong> {pokemon.id}
               </p>
-              {pokemonCounts[pokemon.id] >= 3 && (
+              {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to != null && (
                 <button
-                  onClick={() => evolvePokemon(pokemon.id)}
-                  style={{
-                    padding: "5px 10px",
-                    fontSize: "14px",
-                    cursor: "pointer",
-                    border: "none",
-                    borderRadius: "5px",
+                    style={{
+                    padding: "10px 20px",
+                    marginTop: "10px",
                     backgroundColor: "#28a745",
                     color: "#fff",
-                  }}
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    }}
+                    onClick={() => evolvePokemon(pokemon.id)}
                 >
-                  Evolve
+                    Evolve
                 </button>
-              )}
+                )}
             </div>
           ))}
         </div>
       ) : (
-        <p>Loading Pokémon details...</p>
+        <p>No Pokémon found.</p>
       )}
     </div>
   );
