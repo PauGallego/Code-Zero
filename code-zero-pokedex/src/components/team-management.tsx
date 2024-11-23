@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
+import { DragDropContext, DropResult } from 'react-beautiful-dnd'
+// import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { X } from 'lucide-react'
-import { motion } from 'framer-motion'
-import Image from 'next/image'
+// import { Button } from '@/components/ui/button'
+// import { X } from 'lucide-react'
+// import { motion } from 'framer-motion'
+// import Image from 'next/image'
 
 interface Pokemon {
   id: string
@@ -23,7 +24,6 @@ interface Team {
 
 // Simulated API response
 const fetchTeams = async (): Promise<Team[]> => {
-  // In a real application, this would be an actual API call
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([
@@ -54,17 +54,17 @@ const fetchTeams = async (): Promise<Team[]> => {
           ],
         },
       ])
-    }, 1000) // Simulate network delay
+    }, 1000)
   })
 }
 
-const typeColors: { [key: string]: string } = {
-  Electric: 'bg-yellow-500',
-  Fire: 'bg-red-500',
-  Grass: 'bg-green-500',
-  Water: 'bg-blue-500',
-  Psychic: 'bg-purple-500',
-}
+// const typeColors: { [key: string]: string } = {
+//   Electric: 'bg-yellow-500',
+//   Fire: 'bg-red-500',
+//   Grass: 'bg-green-500',
+//   Water: 'bg-blue-500',
+//   Psychic: 'bg-purple-500',
+// }
 
 export default function TeamManagement() {
   const [teams, setTeams] = useState<Team[]>([])
@@ -101,17 +101,17 @@ export default function TeamManagement() {
     setTeams(newTeams)
   }
 
-  const removePokemon = (teamId: string, pokemonId: string) => {
-    setTeams(teams.map(team => {
-      if (team.id === teamId) {
-        return {
-          ...team,
-          pokemon: team.pokemon.filter(p => p.id !== pokemonId)
-        }
-      }
-      return team
-    }))
-  }
+  // const removePokemon = (teamId: string, pokemonId: string) => {
+  //   setTeams(teams.map(team => {
+  //     if (team.id === teamId) {
+  //       return {
+  //         ...team,
+  //         pokemon: team.pokemon.filter(p => p.id !== pokemonId)
+  //       }
+  //     }
+  //     return team
+  //   }))
+  // }
 
   if (isLoading) {
     return <div className="text-center text-white text-2xl">Loading teams...</div>
@@ -128,9 +128,13 @@ export default function TeamManagement() {
                 <CardTitle className="text-lg font-medium text-white">{team.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <Droppable droppableId={team.id}>
+                {/* <Droppable droppableId={team.id} isDropDisabled={false}>
                   {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef} className="min-h-[100px]">
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className="min-h-[100px]"
+                    >
                       {team.pokemon.map((pokemon, index) => (
                         <Draggable key={pokemon.id} draggableId={pokemon.id} index={index}>
                           {(provided) => (
@@ -161,7 +165,7 @@ export default function TeamManagement() {
                       {provided.placeholder}
                     </div>
                   )}
-                </Droppable>
+                </Droppable> */}
               </CardContent>
             </Card>
           ))}
@@ -170,4 +174,3 @@ export default function TeamManagement() {
     </div>
   )
 }
-
