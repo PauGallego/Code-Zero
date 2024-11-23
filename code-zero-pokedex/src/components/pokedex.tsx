@@ -32,7 +32,7 @@ export default function Pokedex() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto bg-gradient-to-br from-red-500 to-yellow-400 shadow-xl rounded-xl overflow-hidden">
+    <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-gradient-to-br from-red-500 to-yellow-400 shadow-xl rounded-xl overflow-hidden">
       <CardContent className="p-6">
         <motion.h1
           className="text-4xl font-bold mb-6 text-center text-white drop-shadow-lg"
