@@ -194,7 +194,7 @@ const handleLogout = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            Pokédex
+           <h1>Pokedex</h1>
           </motion.h1>
           <div className="flex items-center space-x-4">
           

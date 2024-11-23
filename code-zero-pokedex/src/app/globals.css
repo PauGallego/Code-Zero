@@ -11,10 +11,23 @@
     font-style: normal;
   }
   
+  @font-face {
+    font-family: 'PokemonTitle';
+    src: url('/title2.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
   /* Aplica la fuente globalmente */
   html, body {
     font-family: 'PokemonDS', sans-serif;
   }
+  
+  /* Aplica la fuente a los encabezados */
+  h1 {
+    font-family: 'PokemonTitle', sans-serif;
+  }
+  
 
   * {
     @apply border-border;
