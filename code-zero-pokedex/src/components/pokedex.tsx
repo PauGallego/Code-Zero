@@ -181,29 +181,30 @@ export default function Pokedex() {
           </div>
         </div>
 
-        <div className="flex items-center mb-6 gap-4">
-          <div className="relative flex-1">
-            <Input
-              type="text"
-              placeholder="Search Pokémon..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-10 bg-white/90"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400" size={20} />
-          </div>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={evolveAll}
-            className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500"
-          >
-            Evolve All
-          </Button>
+        <div className="flex flex-col md:flex-row items-center mb-6 gap-4">
+        <div className="relative flex-1 w-full">
+          <Input
+            type="text"
+            placeholder="Search Pokémon..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-10 bg-white/90"
+          />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400" size={20} />
+        </div>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={evolveAll}
+          className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500 w-full md:w-auto"
+        >
+          Evolve All
+        </Button>
+        <div className="w-full md:w-auto">
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 bg-white"
+            className="border border-gray-300 rounded-lg px-4 py-2 bg-white w-full md:w-auto"
           >
             <option value="name">Sort by Name</option>
             <option value="id">Sort by ID</option>
@@ -212,6 +213,8 @@ export default function Pokedex() {
             <option value="evolves">Sort by Evolvable</option>
           </select>
         </div>
+      </div>
+
 
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 mb-4 bg-[#d7d7d7] h-[55px] pl-[30px] pr-[30px]">
@@ -240,15 +243,16 @@ export default function Pokedex() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <TabsContent value="list">
-                {activeTab === 'list' && (
-                  <div className="overflow-y-auto h-[65vh]">
-                    {filteredPokemons.length > 0 ? (
-                      filteredPokemons.map((pokemon) => (
+             <TabsContent value="list">
+              {activeTab === 'list' && (
+                <div className="overflow-y-auto h-[60vh]">
+                  {filteredPokemons.length > 0 ? (
+                    <>
+                      {filteredPokemons.map((pokemon) => (
                         <div
-                        key={pokemon.id}
-                        className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray"
-                      >
+                          key={pokemon.id}
+                          className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray"
+                        >
                           <div className="flex items-center">
                             {pokemon.image && (
                               <img
@@ -274,46 +278,62 @@ export default function Pokedex() {
                             </Button>
                           )}
                         </div>
-                      ))
-                    ) : (
-                      <p>No Pokémon found.</p>
-                    )}
-                  </div>
-                )}
-              </TabsContent>
-              <TabsContent value="grid">
-                {activeTab === 'grid' && (
-                  <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[65vh]">
-                    {filteredPokemons.map((pokemon) => (
-                      <div
-                        key={pokemon.id}
-                        className="p-4 bg-gray-100 rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow"
-                      >
-                        {pokemon.image && (
-                          <img
-                            src={pokemon.image}
-                            alt={pokemon.name}
-                            className="w-20 h-20 object-contain mb-2"
-                          />
-                        )}
-                        <h2 className="text-lg font-bold">{pokemon.name}</h2>
-                        <p>ID: {pokemon.id}</p>
-                        <p>Count: {pokemonCounts[pokemon.id]}</p>
-                        {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => evolvePokemon(pokemon.id)}
-                            className="text-green-500 border-green-500 hover:bg-green-100 mt-2"
-                          >
-                            Evolve
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
+                      ))}
+                      {/* Espaciadores invisibles */}
+                      <div className="h-8"></div>
+                      <div className="h-8"></div>
+                      <div className="h-8"></div>
+                  <div className="h-8"></div>
+                    </>
+                  ) : (
+                    <p>No Pokémon found.</p>
+                  )}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="grid">
+              {activeTab === 'grid' && (
+                <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[58vh]">
+                  {filteredPokemons.map((pokemon) => (
+                    <div
+                      key={pokemon.id}
+                      className="p-4 bg-gray-100 rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow"
+                    >
+                      {pokemon.image && (
+                        <img
+                          src={pokemon.image}
+                          alt={pokemon.name}
+                          className="w-20 h-20 object-contain mb-2"
+                        />
+                      )}
+                      <h2 className="text-lg font-bold">{pokemon.name}</h2>
+                      <p>ID: {pokemon.id}</p>
+                      <p>Count: {pokemonCounts[pokemon.id]}</p>
+                      {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => evolvePokemon(pokemon.id)}
+                          className="text-green-500 border-green-500 hover:bg-green-100 mt-2"
+                        >
+                          Evolve
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  {/* Espaciadores invisibles */}
+                  <div className="h-8"></div>
+                  <div className="h-8"></div>
+                  <div className="h-8"></div>
+                  <div className="h-8"></div>
+                </div>
+              )}
+            </TabsContent>
+           <div className="h-8"></div>
+          <div className="h-8"></div>
+          <div className="h-8"></div>
+
               <TabsContent value="team">
                 {activeTab === 'team' && <TeamManagement />}
               </TabsContent>
