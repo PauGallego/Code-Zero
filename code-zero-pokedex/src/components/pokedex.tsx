@@ -1,33 +1,71 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { QrCode, Mic, Search, Users, BarChart2, Bot, List, Grid } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import RivalAnalysis from './rival-analysis'
-import TeamManagement from './team-management'
-import AIAssistant from './ai-assistant'
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { QrCode, Mic, Search, Users, BarChart2, Bot, List, Grid, LogOut } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import RivalAnalysis from './rival-analysis';
+import TeamManagement from './team-management';
+import AIAssistant from './ai-assistant';
+import VoiceRecognitionModal from './voicerecon';
 
 export default function Pokedex() {
-  const teamUrl = "https://hackeps-poke-backend.azurewebsites.net/teams/"
-  const pokemonUrl = "https://hackeps-poke-backend.azurewebsites.net/pokemons/"
-  const teamId = "63bf06cf-e720-4134-9252-f195668c6048"
+  const teamUrl = 'https://hackeps-poke-backend.azurewebsites.net/teams/';
+  const pokemonUrl = 'https://hackeps-poke-backend.azurewebsites.net/pokemons/';
+  const teamId = '63bf06cf-e720-4134-9252-f195668c6048';
 
-  const [teamData, setTeamData] = useState<any>(null)
-  const [pokemonDetails, setPokemonDetails] = useState<any[]>([])
-  const [pokemonCounts, setPokemonCounts] = useState<{ [key: string]: number }>({})
-  const [filteredPokemons, setFilteredPokemons] = useState<any[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sortOrder, setSortOrder] = useState('name') // Default sort by name
-  const [isScanning, setIsScanning] = useState(false)
-  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('list')
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [recognizedText, setRecognizedText] = useState('');
 
-  const specialImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s"
-  const specialImageUrl2 = "https://canarddebain.com/cdn/shop/products/CanardPerroquetPirate-Lilalu02.png?v=1640250617"
+  const handleRecognize = (text: string) => {
+    setRecognizedText(text);
+    console.log('Recognized Text:', text);
+  };
+
+  const toggleAIAssistant = () => {
+    setIsAIAssistantOpen((prev) => !prev);
+    console.log('AI Assistant toggled:', !isAIAssistantOpen);
+  };
+
+  const [teamData, setTeamData] = useState<any>(null);
+  const [pokemonDetails, setPokemonDetails] = useState<any[]>([]);
+  const [pokemonCounts, setPokemonCounts] = useState<{ [key: string]: number }>({});
+  const [filteredPokemons, setFilteredPokemons] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('name'); // Default sort by name
+  const [isScanning, setIsScanning] = useState(false);
+  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('list');
+
+  const specialImageUrl =
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s';
+  const specialImageUrl2 =
+    'https://canarddebain.com/cdn/shop/products/CanardPerroquetPirate-Lilalu02.png?v=1640250617';
+
+    if (localStorage.getItem('login') == null) {
+  // Pedimos al usuario que introduzca su Team ID
+  const teamId = prompt('Por favor, introduce tu Team ID para iniciar sesión:');
+  if (teamId) {
+    // Guardamos el Team ID en el localStorage como 'login'
+    localStorage.setItem('login', teamId);
+    location.reload(); // Recargamos la página para aplicar cambios
+  } else {
+    alert('Debes introducir un Team ID para continuar.');
+  }
+}
+
+// Función para cerrar sesión
+const handleLogout = () => {
+  console.log('Logging out...');
+  // Eliminamos el dato almacenado con la clave 'login'
+  localStorage.removeItem('login');
+  alert('¡Sesión cerrada!');
+  location.reload(); // Recargamos la página para aplicar cambios
+};
+    
 
   const fetchTeamData = async () => {
     try {
@@ -143,6 +181,11 @@ export default function Pokedex() {
 
   return (
     <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
+      <AIAssistant
+        isOpen={isAIAssistantOpen}
+        onClose={() => setIsAIAssistantOpen(false)} // Asegúrate de que esta función está correctamente definida
+      />
+
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
           <motion.h1
@@ -154,6 +197,7 @@ export default function Pokedex() {
             Pokédex
           </motion.h1>
           <div className="flex items-center space-x-4">
+          
             <Button
               variant="outline"
               size="icon"
@@ -162,48 +206,72 @@ export default function Pokedex() {
             >
               <QrCode size={24} className="text-red-500" />
             </Button>
+
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setIsAIAssistantOpen(true)}
+              onClick={() => toggleAIAssistant()}
               className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
             >
               <Bot size={24} className="text-red-500" />
             </Button>
+
             <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => alert('Voice Search Placeholder')}
-              className="rounded-lg hover:bg-red-100"
+              variant="outline"
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
             >
               <Mic size={24} className="text-red-500" />
             </Button>
+
+            {recognizedText && (
+              <p className="mt-4 text-gray-700">
+                Last Recognized Text: <strong>{recognizedText}</strong>
+              </p>
+            )}
+
+            <VoiceRecognitionModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onRecognize={handleRecognize}
+            />
+              {/* Botón de Logout */}
+              <Button
+              variant="outline"
+              size="icon"
+              onClick={handleLogout}
+              className="rounded-lg border-2 border-red-500 hover:bg-red-100 bg-white/90"
+            >
+              <LogOut size={24} className="text-red-500" />
+            </Button>
+
           </div>
         </div>
 
-        <div className="flex items-center mb-6 gap-4">
-          <div className="relative flex-1">
-            <Input
-              type="text"
-              placeholder="Search Pokémon..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-10 bg-white/90"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400" size={20} />
-          </div>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={evolveAll}
-            className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500"
-          >
-            Evolve All
-          </Button>
+        <div className="flex flex-col md:flex-row items-center mb-6 gap-4">
+        <div className="relative flex-1 w-full">
+          <Input
+            type="text"
+            placeholder="Search Pokémon..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-10 bg-white/90"
+          />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400" size={20} />
+        </div>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={evolveAll}
+          className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500 w-full md:w-auto"
+        >
+          Evolve All
+        </Button>
+        <div className="w-full md:w-auto">
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 bg-white"
+            className="border border-gray-300 rounded-lg px-4 py-2 bg-white w-full md:w-auto"
           >
             <option value="name">Sort by Name</option>
             <option value="id">Sort by ID</option>
@@ -212,6 +280,8 @@ export default function Pokedex() {
             <option value="evolves">Sort by Evolvable</option>
           </select>
         </div>
+      </div>
+
 
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 mb-4 bg-[#d7d7d7] h-[55px] pl-[30px] pr-[30px]">
@@ -240,15 +310,16 @@ export default function Pokedex() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <TabsContent value="list">
-                {activeTab === 'list' && (
-                  <div className="overflow-y-auto h-[65vh]">
-                    {filteredPokemons.length > 0 ? (
-                      filteredPokemons.map((pokemon) => (
+             <TabsContent value="list">
+              {activeTab === 'list' && (
+                <div className="overflow-y-auto h-[60vh]">
+                  {filteredPokemons.length > 0 ? (
+                    <>
+                      {filteredPokemons.map((pokemon) => (
                         <div
-                        key={pokemon.id}
-                        className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray"
-                      >
+                          key={pokemon.id}
+                          className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray"
+                        >
                           <div className="flex items-center">
                             {pokemon.image && (
                               <img
@@ -274,46 +345,62 @@ export default function Pokedex() {
                             </Button>
                           )}
                         </div>
-                      ))
-                    ) : (
-                      <p>No Pokémon found.</p>
-                    )}
-                  </div>
-                )}
-              </TabsContent>
-              <TabsContent value="grid">
-                {activeTab === 'grid' && (
-                  <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[65vh]">
-                    {filteredPokemons.map((pokemon) => (
-                      <div
-                        key={pokemon.id}
-                        className="p-4 bg-gray-100 rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow"
-                      >
-                        {pokemon.image && (
-                          <img
-                            src={pokemon.image}
-                            alt={pokemon.name}
-                            className="w-20 h-20 object-contain mb-2"
-                          />
-                        )}
-                        <h2 className="text-lg font-bold">{pokemon.name}</h2>
-                        <p>ID: {pokemon.id}</p>
-                        <p>Count: {pokemonCounts[pokemon.id]}</p>
-                        {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => evolvePokemon(pokemon.id)}
-                            className="text-green-500 border-green-500 hover:bg-green-100 mt-2"
-                          >
-                            Evolve
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
+                      ))}
+                      {/* Espaciadores invisibles */}
+                      <div className="h-8"></div>
+                      <div className="h-8"></div>
+                      <div className="h-8"></div>
+                  <div className="h-8"></div>
+                    </>
+                  ) : (
+                    <p>No Pokémon found.</p>
+                  )}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="grid">
+              {activeTab === 'grid' && (
+                <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[58vh]">
+                  {filteredPokemons.map((pokemon) => (
+                    <div
+                      key={pokemon.id}
+                      className="p-4 bg-gray-100 rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow"
+                    >
+                      {pokemon.image && (
+                        <img
+                          src={pokemon.image}
+                          alt={pokemon.name}
+                          className="w-20 h-20 object-contain mb-2"
+                        />
+                      )}
+                      <h2 className="text-lg font-bold">{pokemon.name}</h2>
+                      <p>ID: {pokemon.id}</p>
+                      <p>Count: {pokemonCounts[pokemon.id]}</p>
+                      {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => evolvePokemon(pokemon.id)}
+                          className="text-green-500 border-green-500 hover:bg-green-100 mt-2"
+                        >
+                          Evolve
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  {/* Espaciadores invisibles */}
+                  <div className="h-8"></div>
+                  <div className="h-8"></div>
+                  <div className="h-8"></div>
+                  <div className="h-8"></div>
+                </div>
+              )}
+            </TabsContent>
+           <div className="h-8"></div>
+          <div className="h-8"></div>
+          <div className="h-8"></div>
+
               <TabsContent value="team">
                 {activeTab === 'team' && <TeamManagement />}
               </TabsContent>
@@ -323,9 +410,9 @@ export default function Pokedex() {
             </motion.div>
           </AnimatePresence>
         </Tabs>
-      </CardContent>
+        </CardContent>
       {isScanning && <div>QR Scanner Placeholder</div>}
       {isAIAssistantOpen && <div>AI Assistant Placeholder</div>}
     </Card>
-  )
+  );
 }
