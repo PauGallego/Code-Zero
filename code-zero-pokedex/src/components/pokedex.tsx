@@ -181,252 +181,215 @@ const handleLogout = () => {
 
   return (
     <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
-      <AIAssistant
-        isOpen={isAIAssistantOpen}
-        onClose={() => setIsAIAssistantOpen(false)} // Asegúrate de que esta función está correctamente definida
-      />
-
+      <AIAssistant isOpen={isAIAssistantOpen} onClose={() => setIsAIAssistantOpen(false)} />
       <CardContent className="p-6">
-      <div className="flex flex-col items-center md:flex-row md:justify-between md:items-center mb-4">
-  <motion.h1
-    className="text-4xl font-bold text-red-500 drop-shadow-lg mb-4 md:mb-0 text-center"
-    initial={{ y: -20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.5 }}
-  >
-    Pokedex
-  </motion.h1>
-  <div className="flex items-center justify-center space-x-4">
-    <Button
-      variant="outline"
-      size="icon"
-      onClick={() => setIsScanning(true)}
-      className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
-    >
-      <QrCode size={24} className="text-red-500" />
-    </Button>
-
-    <Button
-      variant="outline"
-      size="icon"
-      onClick={() => toggleAIAssistant()}
-      className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
-    >
-      <Bot size={24} className="text-red-500" />
-    </Button>
-
-    <Button
-      variant="outline"
-      size="icon"
-      onClick={() => setIsModalOpen(true)}
-      className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
-    >
-      <Mic size={24} className="text-red-500" />
-    </Button>
-
-    {recognizedText && (
-      <p className="mt-4 text-gray-700 text-center">
-        Last Recognized Text: <strong>{recognizedText}</strong>
-      </p>
-    )}
-
-    <VoiceRecognitionModal
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
-      onRecognize={handleRecognize}
-    />
-
-    <Button
-      variant="outline"
-      size="icon"
-      onClick={handleLogout}
-      className="rounded-lg border-2 border-red-500 hover:bg-red-100 bg-white/90"
-    >
-      <LogOut size={24} className="text-red-500" />
-    </Button>
-  </div>
-</div>
-
-
-
-        <div className="flex flex-col md:flex-row items-center mb-6 gap-4">
-        <div className="relative flex-1 w-full">
-          <Input
-            type="text"
-            placeholder="Search Pokémon..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-10 bg-white/90"
-          />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400" size={20} />
-        </div>
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={evolveAll}
-          className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500 w-full md:w-auto"
-        >
-          Evolve All
-        </Button>
-        <div className="w-full md:w-auto">
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 bg-white w-full md:w-auto"
+        <div className="flex flex-col items-center md:flex-row md:justify-between mb-4">
+          <motion.h1
+            className="text-4xl font-bold text-red-500 drop-shadow-lg mb-4 md:mb-0 text-center"
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
           >
-            <option value="name">Sort by Name</option>
-            <option value="id">Sort by ID</option>
-            <option value="count">Sort by Duplicates</option>
-            <option value="type">Sort by Type</option>
-            <option value="evolves">Sort by Evolvable</option>
-          </select>
-        </div>
-      </div>
-
-
-        <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
-        <TabsList className="flex md:grid md:grid-cols-4 justify-between items-center w-full mb-4 bg-[#d7d7d7] h-[40px] md:h-[55px] p-2 ">
-  <TabsTrigger
-    value="list"
-    className="flex items-center justify-center data-[state=active]:bg-red-500 data-[state=active]:text-white px-2 py-1 rounded-md"
-  >
-    <List size={24} className="md:mr-2" />
-    <span className="hidden md:inline">List</span>
-  </TabsTrigger>
-  <TabsTrigger
-    value="grid"
-    className="flex items-center justify-center data-[state=active]:bg-blue-500 data-[state=active]:text-white px-2 py-1 rounded-md"
-  >
-    <Grid size={24} className="md:mr-2" />
-    <span className="hidden md:inline">Grid</span>
-  </TabsTrigger>
-  <TabsTrigger
-    value="team"
-    className="flex items-center justify-center data-[state=active]:bg-green-500 data-[state=active]:text-white px-2 py-1 rounded-md"
-  >
-    <Map size={24} className="md:mr-2" />
-    <span className="hidden md:inline">Zonas</span>
-  </TabsTrigger>
-  <TabsTrigger
-    value="rival"
-    className="flex items-center justify-center data-[state=active]:bg-yellow-500 data-[state=active]:text-white px-2 py-1 rounded-md"
-  >
-    <Sword size={24} className="md:mr-2" />
-    <span className="hidden md:inline">Torneos</span>
-  </TabsTrigger>
-</TabsList>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+            Pokedex
+          </motion.h1>
+          <div className="flex items-center justify-center space-x-4">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setIsScanning(true)}
+              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
             >
-             <TabsContent value="list">
-              {activeTab === 'list' && (
-                <div className="overflow-y-auto h-[60vh]">
-                  {filteredPokemons.length > 0 ? (
-                    <>
-                      {filteredPokemons.map((pokemon) => (
-                        <div
-                          key={pokemon.id}
-                          className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray"
-                        >
-                          <div className="flex items-center">
-                            {pokemon.image && (
-                              <img
-                                src={pokemon.image}
-                                alt={pokemon.name}
-                                className="w-16 h-16 object-contain mr-4"
-                              />
-                            )}
-                            <div>
-                              <h2 className="text-lg font-bold">{pokemon.name}</h2>
-                              <p>ID: {pokemon.id}</p>
-                              <p>Count: {pokemonCounts[pokemon.id]}</p>
-                            </div>
-                          </div>
-                          {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => evolvePokemon(pokemon.id)}
-                              className="text-green-500 border-green-500 hover:bg-green-100"
-                            >
-                              Evolve
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                      {/* Espaciadores invisibles */}
-                      <div className="h-8"></div>
-                      <div className="h-8"></div>
-                      <div className="h-8"></div>
-                  <div className="h-8"></div>
-                    </>
-                  ) : (
-                    <p>No Pokémon found.</p>
-                  )}
+              <QrCode size={24} className="text-red-500" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setIsAIAssistantOpen(true)}
+              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
+            >
+              <Bot size={24} className="text-red-500" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
+            >
+              <Mic size={24} className="text-red-500" />
+            </Button>
+            <VoiceRecognitionModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onRecognize={handleRecognize}
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleLogout}
+              className="rounded-lg border-2 border-red-500 hover:bg-red-100 bg-white/90"
+            >
+              <LogOut size={24} className="text-red-500" />
+            </Button>
+          </div>
+        </div>
+  
+        <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
+          <TabsList className="flex md:grid md:grid-cols-4 justify-between items-center w-full mb-4 bg-[#d7d7d7] h-[40px] md:h-[55px] p-2">
+            <TabsTrigger
+              value="list"
+              className="flex items-center justify-center data-[state=active]:bg-red-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+            >
+              <List size={24} className="md:mr-2" />
+              <span className="hidden md:inline">List</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="grid"
+              className="flex items-center justify-center data-[state=active]:bg-blue-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+            >
+              <Grid size={24} className="md:mr-2" />
+              <span className="hidden md:inline">Grid</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="team"
+              className="flex items-center justify-center data-[state=active]:bg-green-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+            >
+              <Map size={24} className="md:mr-2" />
+              <span className="hidden md:inline">Zonas</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="rival"
+              className="flex items-center justify-center data-[state=active]:bg-yellow-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+            >
+              <Sword size={24} className="md:mr-2" />
+              <span className="hidden md:inline">Torneos</span>
+            </TabsTrigger>
+          </TabsList>
+  
+          {['list', 'grid'].includes(activeTab) && (
+            <div className="mb-6">
+              <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
+                <div className="relative flex-1 w-full">
+                  <Input
+                    type="text"
+                    placeholder="Search Pokémon..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-10 bg-white/90"
+                  />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400" size={20} />
                 </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="grid">
-              {activeTab === 'grid' && (
-                <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[58vh]">
-                  {filteredPokemons.map((pokemon) => (
+                <div className="w-full md:w-auto">
+                  <select
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    className="border border-gray-300 rounded-lg px-4 py-2 bg-white w-full md:w-auto"
+                  >
+                    <option value="name">Sort by Name</option>
+                    <option value="id">Sort by ID</option>
+                    <option value="count">Sort by Duplicates</option>
+                    <option value="type">Sort by Type</option>
+                    <option value="evolves">Sort by Evolvable</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={evolveAll}
+                  className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500 w-3/4 md:w-auto"
+                >
+                  Evolve All
+                </Button>
+              </div>
+            </div>
+          )}
+  
+          <TabsContent value="list">
+            {activeTab === 'list' && (
+              <div className="overflow-y-auto h-[60vh]">
+                {filteredPokemons.length > 0 ? (
+                  filteredPokemons.map((pokemon) => (
                     <div
                       key={pokemon.id}
-                      className="p-4 bg-gray-100 rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow"
+                      className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray"
                     >
-                      {pokemon.image && (
-                        <img
-                          src={pokemon.image}
-                          alt={pokemon.name}
-                          className="w-20 h-20 object-contain mb-2"
-                        />
-                      )}
-                      <h2 className="text-lg font-bold">{pokemon.name}</h2>
-                      <p>ID: {pokemon.id}</p>
-                      <p>Count: {pokemonCounts[pokemon.id]}</p>
+                      <div className="flex items-center">
+                        {pokemon.image && (
+                          <img
+                            src={pokemon.image}
+                            alt={pokemon.name}
+                            className="w-16 h-16 object-contain mr-4"
+                          />
+                        )}
+                        <div>
+                          <h2 className="text-lg font-bold">{pokemon.name}</h2>
+                          <p>ID: {pokemon.id}</p>
+                          <p>Count: {pokemonCounts[pokemon.id]}</p>
+                        </div>
+                      </div>
                       {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => evolvePokemon(pokemon.id)}
-                          className="text-green-500 border-green-500 hover:bg-green-100 mt-2"
+                          className="text-green-500 border-green-500 hover:bg-green-100"
                         >
                           Evolve
                         </Button>
                       )}
                     </div>
-                  ))}
-                  {/* Espaciadores invisibles */}
-                  <div className="h-8"></div>
-                  <div className="h-8"></div>
-                  <div className="h-8"></div>
-                  <div className="h-8"></div>
-                </div>
-              )}
-            </TabsContent>
-           <div className="h-8"></div>
-          <div className="h-8"></div>
-          <div className="h-8"></div>
-
-              <TabsContent value="team">
-                {activeTab === 'team' && <TeamManagement />}
-              </TabsContent>
-              <TabsContent value="rival">
-                {activeTab === 'rival' && <RivalAnalysis />}
-              </TabsContent>
-            </motion.div>
-          </AnimatePresence>
+                  ))
+                ) : (
+                  <p>No Pokémon found.</p>
+                )}
+              </div>
+            )}
+          </TabsContent>
+  
+          <TabsContent value="grid">
+            {activeTab === 'grid' && (
+              <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[58vh]">
+                {filteredPokemons.map((pokemon) => (
+                  <div
+                    key={pokemon.id}
+                    className="p-4 bg-gray-100 rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow"
+                  >
+                    {pokemon.image && (
+                      <img
+                        src={pokemon.image}
+                        alt={pokemon.name}
+                        className="w-20 h-20 object-contain mb-2"
+                      />
+                    )}
+                    <h2 className="text-lg font-bold">{pokemon.name}</h2>
+                    <p>ID: {pokemon.id}</p>
+                    <p>Count: {pokemonCounts[pokemon.id]}</p>
+                    {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => evolvePokemon(pokemon.id)}
+                        className="text-green-500 border-green-500 hover:bg-green-100 mt-2"
+                      >
+                        Evolve
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+  
+          <TabsContent value="team">
+            {activeTab === 'team' && <TeamManagement />}
+          </TabsContent>
+          <TabsContent value="rival">
+            {activeTab === 'rival' && <RivalAnalysis />}
+          </TabsContent>
         </Tabs>
-        </CardContent>
-      {isScanning && <div>QR Scanner Placeholder</div>}
-      {isAIAssistantOpen && <div>AI Assistant Placeholder</div>}
+      </CardContent>
     </Card>
   );
+  
 }
