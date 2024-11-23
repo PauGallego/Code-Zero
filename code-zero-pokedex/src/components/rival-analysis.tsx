@@ -4,7 +4,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+// Hook para manejar el radio responsivo
+function useResponsiveOuterRadius() {
+  const [outerRadius, setOuterRadius] = useState(130); // Valor por defecto para pantallas grandes (PC)
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setOuterRadius(80);  // Móvil
+      } else if (window.innerWidth < 1024) {
+        setOuterRadius(100);  // Tablet
+      } else {
+        setOuterRadius(130);  // PC (pantallas grandes)
+      }
+    };
+
+    handleResize();  // Establece el valor al cargar la página
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // Limpiar el event listener
+    };
+  }, []);
+
+  return outerRadius;
+}
 
 const typeData = [
   { name: 'Fire', count: 3 },
@@ -28,6 +54,7 @@ const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FED766', '#2AB7CA', '#F0B67F'
 
 export default function RivalAnalysis() {
   const [activeTab, setActiveTab] = useState('type') // Track the active tab
+  const outerRadius = useResponsiveOuterRadius();  // Obtenemos el outerRadius responsivo
 
   return (
     <div className="space-y-4">
@@ -41,6 +68,7 @@ export default function RivalAnalysis() {
             Team Stats
           </TabsTrigger>
         </TabsList>
+
         <TabsContent value="type">
           {activeTab === 'type' && (
             <Card>
@@ -65,7 +93,7 @@ export default function RivalAnalysis() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        outerRadius={window.innerWidth < 640 ? 80 : 130} // CAMBIAR TAMAÑO RADIO SEGUN LA PANTALLA
+                        outerRadius={outerRadius} // Usamos el valor responsivo de outerRadius
                         fill="#8884d8"
                         dataKey="count"
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
@@ -82,6 +110,7 @@ export default function RivalAnalysis() {
             </Card>
           )}
         </TabsContent>
+
         <TabsContent value="stats">
           {activeTab === 'stats' && (
             <Card>
@@ -97,7 +126,7 @@ export default function RivalAnalysis() {
                       color: 'hsl(var(--chart-2))',
                     },
                   }}
-                  className="w-[350px] sm:w-[450px] md:w-[500px]" // CAMBIAR ANCHURA ESTADISTICA SEGUN LA PANTALLA
+                  className="w-full sm:w-[450px] md:w-[500px]" // CAMBIAR ANCHURA ESTADISTICA SEGUN LA PANTALLA
                 >
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={statData}>
@@ -115,7 +144,6 @@ export default function RivalAnalysis() {
                   </ResponsiveContainer>
                 </ChartContainer>
               </CardContent>
-
             </Card>
           )}
         </TabsContent>
