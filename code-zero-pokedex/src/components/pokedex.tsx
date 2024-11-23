@@ -40,7 +40,7 @@ export default function Pokedex() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          Pokédex 2.0
+          Pokédex
         </motion.h1>
         <div className="flex items-center mb-6 gap-2">
           <div className="relative flex-1">
@@ -95,10 +95,10 @@ export default function Pokedex() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <TabsContent value="list">
+              <TabsContent value="list"className={activeTab === 'list' ? '' : 'hidden'}>
                 <PokemonList view="list" searchQuery={searchQuery} />
               </TabsContent>
-              <TabsContent value="grid">
+              <TabsContent value="grid"className={activeTab === 'grid' ? '' : 'hidden'}>
                 <PokemonList view="grid" searchQuery={searchQuery} />
               </TabsContent>
               <TabsContent value="team">
