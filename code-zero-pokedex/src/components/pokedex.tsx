@@ -10,11 +10,26 @@ import { motion, AnimatePresence } from 'framer-motion'
 import RivalAnalysis from './rival-analysis'
 import TeamManagement from './team-management'
 import AIAssistant from './ai-assistant'
+import VoiceRecognitionModal from './voicerecon'
 
 export default function Pokedex() {
   const teamUrl = "https://hackeps-poke-backend.azurewebsites.net/teams/"
   const pokemonUrl = "https://hackeps-poke-backend.azurewebsites.net/pokemons/"
   const teamId = "63bf06cf-e720-4134-9252-f195668c6048"
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [recognizedText, setRecognizedText] = useState('')
+
+  const handleRecognize = (text: string) => {
+    setRecognizedText(text)
+    console.log('Recognized Text:', text)
+  }
+
+  const toggleAIAssistant = () => {
+    setIsAIAssistantOpen((prev) => !prev);
+    console.log('AI Assistant toggled:', !isAIAssistantOpen);
+  };
+  
 
   const [teamData, setTeamData] = useState<any>(null)
   const [pokemonDetails, setPokemonDetails] = useState<any[]>([])
@@ -142,7 +157,13 @@ export default function Pokedex() {
   }, [searchQuery, sortOrder, pokemonDetails, pokemonCounts])
 
   return (
+    
     <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
+                    <AIAssistant
+                    isOpen={isAIAssistantOpen}
+                    onClose={() => setIsAIAssistantOpen(false)} // Asegúrate de que esta función está correctamente definida
+                  />
+
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
           <motion.h1
@@ -165,19 +186,34 @@ export default function Pokedex() {
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setIsAIAssistantOpen(true)}
+              onClick={() => toggleAIAssistant()}
               className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
             >
+
+
               <Bot size={24} className="text-red-500" />
             </Button>
+         
+
             <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => alert('Voice Search Placeholder')}
-              className="rounded-lg hover:bg-red-100"
-            >
-              <Mic size={24} className="text-red-500" />
-            </Button>
+        variant="outline"
+        onClick={() => setIsModalOpen(true)}
+        className="rounded-lg"
+      >
+          <Mic size={24} className="text-red-500" />
+          </Button>
+
+      {recognizedText && (
+        <p className="mt-4 text-gray-700">
+          Last Recognized Text: <strong>{recognizedText}</strong>
+        </p>
+      )}
+
+      <VoiceRecognitionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onRecognize={handleRecognize}
+      />
           </div>
         </div>
 
