@@ -322,7 +322,7 @@ export default function Pokedex() {
               </p>
               {selectedPokemon.evolves_to && (
                 <p>
-                  <strong>Evolves To:</strong>{' '}
+                  <strong>Evoluciona a:</strong>{' '}
                   {Array.isArray(selectedPokemon.evolves_to)
                     ? selectedPokemon.evolves_to.map((evolution: { name: string }) => evolution.name).join(', ')
                     : selectedPokemon.evolves_to?.name || 'None'}
@@ -341,7 +341,7 @@ export default function Pokedex() {
               onClick={closePokemonModal}
               className="bg-red-500 text-white hover:bg-red-600"
             >
-              Close
+              Cerrar
             </Button>
           </div>
         </DialogContent>
@@ -469,7 +469,7 @@ export default function Pokedex() {
               className="flex items-center justify-center data-[state=active]:bg-red-500  px-2 py-1 rounded-md"
             >
               <List size={24} className="md:mr-2" />
-              <span className="hidden md:inline">List</span>
+              <span className="hidden md:inline">Lista</span>
             </TabsTrigger>
             <TabsTrigger
               value="grid"

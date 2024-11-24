@@ -91,8 +91,8 @@ const ApiTournamentComponent: React.FC = () => {
         <div className="space-y-4">
           {tournaments.map((tournament) => (
             <div key={tournament.id} className="p-4 border rounded-lg shadow">
-              <h2 className="text-lg font-bold">Tournament ID: {tournament.id}</h2>
-              <p><strong>Time:</strong> {new Date(tournament.time).toLocaleString()}</p>
+              <h2 className="text-lg font-bold">ID de torneo: {tournament.id}</h2>
+              <p><strong>Fecha:</strong> {new Date(tournament.time).toLocaleString()}</p>
               <p>
                 <strong>Winner:</strong>{" "}
                 {tournament.winner
@@ -106,10 +106,10 @@ const ApiTournamentComponent: React.FC = () => {
                   className={`mt-2 px-4 py-2 rounded ${
                     isLoading
                       ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                      : "bg-blue-500 text-white"
+                      : "bg-blue-500 "
                   }`}
                 >
-                  {isLoading ? "Loading..." : "View Leaderboard"}
+                  {isLoading ? "Cargando..." : "Dashboard"}
                 </button>
               )}
             </div>
@@ -127,7 +127,7 @@ const ApiTournamentComponent: React.FC = () => {
                 Tournament ID: {selectedTournament.id}
               </DialogTitle>
               <DialogDescription>
-                Leaderboard and Match Results
+                Dashboard y resultados de combates
               </DialogDescription>
             </DialogHeader>
             {isLoading ? (
@@ -158,8 +158,8 @@ const ApiTournamentComponent: React.FC = () => {
                 <table className="w-full table-auto border-collapse border border-[(--borde-items)] ">
                   <thead>
                     <tr>
-                      <th className="border border-[(--borde-items)]  px-2 py-1">Match</th>
-                      <th className="border border-[(--borde-items)]  px-2 py-1">Winner</th>
+                      <th className="border border-[(--borde-items)]  px-2 py-1">Combate</th>
+                      <th className="border border-[(--borde-items)]  px-2 py-1">Ganador</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -177,9 +177,9 @@ const ApiTournamentComponent: React.FC = () => {
             )}
             <button
               onClick={handleDialogClose}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+              className="mt-4 bg-red-500  px-4 py-2 rounded"
             >
-              Close
+              Cerrar
             </button>
           </DialogContent>
         </Dialog>

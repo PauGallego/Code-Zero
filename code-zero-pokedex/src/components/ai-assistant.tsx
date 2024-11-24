@@ -78,7 +78,7 @@ export default function AIAssistant({ isOpen, onClose }: AIAssistantProps) {
         <DialogHeader>
           <DialogTitle>AI Assistant</DialogTitle>
           <DialogDescription>
-            Ask for Pokémon recommendations or strategies!
+            Pregunta por pokémons recomendados o estratégias!
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col h-[300px]">
@@ -110,7 +110,7 @@ export default function AIAssistant({ isOpen, onClose }: AIAssistantProps) {
                     overflowWrap: 'break-word',
                   }}
                 >
-                  Typing...
+                  Escriviendo...
                 </div>
               </div>
             )}
@@ -121,7 +121,7 @@ export default function AIAssistant({ isOpen, onClose }: AIAssistantProps) {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a question..."
+              placeholder="Haz una pregunta..."
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               disabled={loading}
             />
