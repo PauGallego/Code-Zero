@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { QrCode, Mic, Search, Bot, List, Grid, LogOut, Sword, Map } from 'lucide-react';
+import { QrCode, Mic, Search, Bot, List, Grid, LogOut, Sword, Map, EggIcon, NutIcon, ComputerIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import RivalAnalysis from './rival-analysis';
 import TeamManagement from './team-management';
@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import EventTriggerComponent from './zone';
 import ThemeSwitch from './ThemeSwitch';
 import axios from 'axios'
+import Autofarmapp from './autofarm';
 
 export default function Pokedex() {
   const teamUrl = 'https://hackeps-poke-backend.azurewebsites.net/teams/';
@@ -36,6 +37,7 @@ export default function Pokedex() {
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('list');
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
+  const [isZoneModalOpen2, setIsZoneModalOpen2] = useState(false);
 
   const [selectedPokemon, setSelectedPokemon] = useState<any | null>(null);
   const [isPokemonModalOpen, setIsPokemonModalOpen] = useState(false);
@@ -383,6 +385,35 @@ export default function Pokedex() {
           <div className="flex items-center justify-center space-x-4">
 
             <ThemeSwitch/>
+            <Button
+  variant="outline"
+  size="icon"
+  onClick={() => setIsZoneModalOpen2(true)} // Estado para abrir el modal
+  className="rounded-lg border border-[var(--borde-items)] bg-[var(--cards-background-modal)] microfono hover:bg-yellow-100"
+>
+  <ComputerIcon size={24} className="text-red-500" />
+</Button>
+
+<Dialog open={isZoneModalOpen2} onOpenChange={setIsZoneModalOpen2}>
+  <DialogContent className="sm:max-w-[425px]">
+    <DialogHeader>
+      <DialogTitle>AutoFarm</DialogTitle>
+      <DialogDescription>
+        Gestiona automáticamente las zonas guardadas.
+      </DialogDescription>
+    </DialogHeader>
+    <Autofarmapp /> {/* Se incluye el componente Autofarmapp */}
+    <div className="flex justify-end mt-4">
+      <Button
+        onClick={() => setIsZoneModalOpen2(false)}
+        className="bg-red-500 text-white hover:bg-red-600"
+      >
+        Cerrar
+      </Button>
+    </div>
+  </DialogContent>
+</Dialog>
+
             <Button
               variant="outline"
               size="icon"

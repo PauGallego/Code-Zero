@@ -19,8 +19,15 @@ const Autofarmapp: React.FC = () => {
   const urlBasePost = "https://hackeps-poke-backend.azurewebsites.net/events/";
   const urlBaseGet = "https://hackeps-poke-backend.azurewebsites.net/zones/";
 
-  const payload = {
-    team_id: "63bf06cf-e720-4134-9252-f195668c6048",
+  // Función para obtener dinámicamente el payload
+  const getPayload = () => {
+    const teamId = localStorage.getItem("teamId");
+    if (!teamId) {
+      throw new Error("Team ID not found in localStorage");
+    }
+    return {
+      team_id: teamId,
+    };
   };
 
   const headers = {
@@ -51,6 +58,7 @@ const Autofarmapp: React.FC = () => {
   async function realizarRequest(zoneId: string): Promise<void> {
     const url = `${urlBasePost}${zoneId}`;
     try {
+      const payload = getPayload(); // Obtén dinámicamente el payload
       const response = await fetch(url, {
         method: "POST",
         headers,
@@ -96,9 +104,14 @@ const Autofarmapp: React.FC = () => {
 
   const handleStart = async () => {
     if (!isRunning) {
-      setIsRunning(true);
-      addLog("Iniciando el proceso...");
-      await main();
+      try {
+        setIsRunning(true);
+        addLog("Iniciando el proceso...");
+        await main();
+      } catch (error) {
+        addLog(`Error al iniciar el proceso: ${error.message}`);
+        setIsRunning(false);
+      }
     } else {
       addLog("El proceso ya está en ejecución.");
     }
