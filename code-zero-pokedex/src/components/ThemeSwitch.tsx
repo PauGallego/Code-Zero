@@ -1,34 +1,50 @@
 'use client'
 
-import { FiSun, FiMoon } from "react-icons/fi"
-import { useState, useEffect } from 'react'
-import { useTheme } from 'next-themes'
-import Image from "next/image"
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
+import { FiSun, FiMoon } from "react-icons/fi";
+import styles from "../app/ThemeSwitch.module.css";
 
 export default function ThemeSwitch() {
-    const [mounted, setMounted] = useState(false)
-    const { setTheme, resolvedTheme } = useTheme()
+    const [mounted, setMounted] = useState(false);
+    const { setTheme, resolvedTheme } = useTheme();
 
-    useEffect(() => setMounted(true), [])
+    useEffect(() => setMounted(true), []);
 
-    if (!mounted) return (
-        <Image
-            src="data:image/svg+xml;base64,PHN2ZyBzdHJva2U9IiNGRkZGRkYiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMCIgdmlld0JveD0iMCAwIDI0IDI0IiBoZWlnaHQ9IjIwMHB4IiB3aWR0aD0iMjAwcHgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSIyIiB5PSIyIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiIHJ4PSIyIj48L3JlY3Q+PC9zdmc+Cg=="
-            width={36}
-            height={36}
-            sizes="36x36"
-            alt="Loading Light/Dark Toggle"
-            priority={false}
-            title="Loading Light/Dark Toggle"
-        />
-    )
+    if (!mounted) return null;
 
-    if (resolvedTheme === 'dark') {
-        return <FiSun onClick={() => setTheme('light')} />
-    }
+    const isDark = resolvedTheme === "dark";
 
-    if (resolvedTheme === 'light') {
-        return <FiMoon onClick={() => setTheme('dark')} />
-    }
-
+    return (
+        <motion.div
+            className={styles.switchContainer}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+        >
+            <div
+                className={`${styles.switch} ${isDark ? styles.dark : styles.light}`}
+                onClick={() => setTheme(isDark ? "light" : "dark")}
+                role="button"
+                title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
+            >
+                <motion.div
+                    className={styles.toggle}
+                    layout
+                    transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 25,
+                    }}
+                >
+                    {isDark ? (
+                        <FiMoon className={styles.icon} />
+                    ) : (
+                        <FiSun className={styles.icon} />
+                    )}
+                </motion.div>
+            </div>
+        </motion.div>
+    );
 }
