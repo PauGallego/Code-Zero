@@ -389,13 +389,13 @@ export default function Pokedex() {
   variant="outline"
   size="icon"
   onClick={() => setIsZoneModalOpen2(true)} // Estado para abrir el modal
-  className="rounded-lg border border-[var(--borde-items)] bg-[var(--cards-background-modal)] microfono hover:bg-yellow-100"
+  className="rounded-lg border border-[var(--borde-items)] bg-[var(--cards-background-modal)]  hover:bg-yellow-100"
 >
   <ComputerIcon size={24} className="text-red-500" />
 </Button>
 
 <Dialog open={isZoneModalOpen2} onOpenChange={setIsZoneModalOpen2}>
-  <DialogContent className="sm:max-w-[425px]">
+  <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)]">
     <DialogHeader>
       <DialogTitle>AutoFarm</DialogTitle>
       <DialogDescription>
