@@ -143,7 +143,7 @@ const Autofarmapp: React.FC = () => {
           height: "300px",
           overflowY: "scroll",
           border: "1px solid #ccc",
-          backgroundColor: "#f9f9f9",
+          backgroundColor: "bg-[var(--cards-background-modal)]",
         }}
       >
         {logs.map((log, index) => (

@@ -151,7 +151,7 @@ export default function Pokedex() {
     setIsModalOpen(false); // Cierra el modal de voz
     console.log('Recognized Text:', text); // Muestra el texto reconocido en la consola
   };
-  
+
 
   const fetchTeamData = async () => {
     if (!teamId) return; // Prevent fetch if teamId is null
@@ -170,25 +170,25 @@ export default function Pokedex() {
       const response = await fetch(`${pokemonUrl}${pokemonId}`);
       if (!response.ok) throw new Error(`Error fetching Pokémon: ${response.status}`);
       const data = await response.json();
-  
+
       if (data.name === 'Cyberquack') {
         data.image = specialImageUrl;
       } else if (data.name === 'Hackduck') {
         data.image = specialImageUrl2;
       }
-  
+
       // Check and update local storage with zones
       const localStorageZones = JSON.parse(localStorage.getItem("zones") || "[]");
       const pokemonZones = data.location_area_encounters || [];
-  
+
       pokemonZones.forEach((zoneId: string) => {
         if (!localStorageZones.includes(zoneId)) {
           localStorageZones.push(zoneId);
         }
       });
-  
+
       localStorage.setItem("zones", JSON.stringify(localStorageZones));
-  
+
       setPokemonDetails((prev) =>
         prev.find((p) => p.id === data.id) ? prev : [...prev, data]
       );
@@ -196,7 +196,7 @@ export default function Pokedex() {
       console.error(err);
     }
   };
-  
+
 
   const evolvePokemon = async (pokemonId: string) => {
     if (!teamData) return;
@@ -384,35 +384,35 @@ export default function Pokedex() {
           </motion.h1>
           <div className="flex items-center justify-center space-x-4">
 
-            <ThemeSwitch/>
+            <ThemeSwitch />
             <Button
-  variant="outline"
-  size="icon"
-  onClick={() => setIsZoneModalOpen2(true)} // Estado para abrir el modal
-  className="rounded-lg border border-[var(--borde-items)] bg-[var(--cards-background-modal)]  hover:bg-yellow-100"
->
-  <ComputerIcon size={24} className="text-red-500" />
-</Button>
+              variant="outline"
+              size="icon"
+              onClick={() => setIsZoneModalOpen2(true)} // Estado para abrir el modal
+              className="rounded-lg border border-[var(--borde-items)] bg-[var(--cards-background-modal)]  hover:bg-yellow-100"
+            >
+              <ComputerIcon size={24} className="text-red-500" />
+            </Button>
 
-<Dialog open={isZoneModalOpen2} onOpenChange={setIsZoneModalOpen2}>
-  <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)]">
-    <DialogHeader>
-      <DialogTitle>AutoFarm</DialogTitle>
-      <DialogDescription>
-        Gestiona automáticamente las zonas guardadas.
-      </DialogDescription>
-    </DialogHeader>
-    <Autofarmapp /> {/* Se incluye el componente Autofarmapp */}
-    <div className="flex justify-end mt-4">
-      <Button
-        onClick={() => setIsZoneModalOpen2(false)}
-        className="bg-red-500 text-white hover:bg-red-600"
-      >
-        Cerrar
-      </Button>
-    </div>
-  </DialogContent>
-</Dialog>
+            <Dialog open={isZoneModalOpen2} onOpenChange={setIsZoneModalOpen2}>
+              <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)]">
+                <DialogHeader>
+                  <DialogTitle>AutoFarm</DialogTitle>
+                  <DialogDescription>
+                    Gestiona automáticamente las zonas guardadas.
+                  </DialogDescription>
+                </DialogHeader>
+                <Autofarmapp /> {/* Se incluye el componente Autofarmapp */}
+                <div className="flex justify-end mt-4">
+                  <Button
+                    onClick={() => setIsZoneModalOpen2(false)}
+                    className="bg-red-500 text-white hover:bg-red-600"
+                  >
+                    Cerrar
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
 
             <Button
               variant="outline"
@@ -424,24 +424,24 @@ export default function Pokedex() {
             </Button>
 
             <Dialog open={isZoneModalOpen} onOpenChange={setIsZoneModalOpen}>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Zona QR</DialogTitle>
-                <DialogDescription>
-                  Aquí puedes escanear un código QR o realizar alguna acción específica.
-                </DialogDescription>
-              </DialogHeader>
-              <EventTriggerComponent /> {/* Incluimos el componente del escáner QR */}
-              <div className="flex justify-end mt-4">
-                <Button
-                  onClick={() => setIsZoneModalOpen(false)}
-                  className="bg-red-500 text-white hover:bg-red-600"
-                >
-                  Cerrar
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+              <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)]">
+                <DialogHeader>
+                  <DialogTitle>Zona QR</DialogTitle>
+                  <DialogDescription>
+                    Aquí puedes escanear un código QR o realizar alguna acción específica.
+                  </DialogDescription>
+                </DialogHeader>
+                <EventTriggerComponent /> {/* Incluimos el componente del escáner QR */}
+                <div className="flex justify-end mt-4">
+                  <Button
+                    onClick={() => setIsZoneModalOpen(false)}
+                    className="bg-red-500 text-white hover:bg-red-600"
+                  >
+                    Cerrar
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
 
 
             <Button
