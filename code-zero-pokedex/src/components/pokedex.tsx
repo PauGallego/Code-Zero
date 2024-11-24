@@ -209,19 +209,7 @@ const handleLogout = () => {
             >
               <Bot size={24} className="text-red-500" />
             </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsModalOpen(true)}
-              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
-            >
-              <Mic size={24} className="text-red-500" />
-            </Button>
-            <VoiceRecognitionModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onRecognize={handleRecognize}
-            />
+          
             <Button
               variant="outline"
               size="icon"
@@ -292,15 +280,28 @@ const handleLogout = () => {
                   </select>
                 </div>
               </div>
-              <div className="flex justify-center">
+              <div className="flex justify-center align-centerflex justify-center items-center gap-4">
                 <Button
                   variant="outline"
-                  size="lg"
+                  
                   onClick={evolveAll}
-                  className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500 w-3/4 md:w-auto"
+                  className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500 w-[100%] h-[80%] "
                 >
                   Evolve All
                 </Button>
+                <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90 "
+            >
+              <Mic size={24} className="text-red-500" />
+            </Button>
+            <VoiceRecognitionModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onRecognize={handleRecognize}
+            />
               </div>
             </div>
           )}
