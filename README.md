@@ -2,38 +2,13 @@
 
 En este proyecto, hemos hecho una Pokédex, partiendo como base de una API que nos ofrece la capacidad de capturar Pokémon y almacenarlos por zonas, relacionadas a un equipo, para después participar en torneos Pokémon.
 
-## Comenzando 🚀
-
-_Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas._
-
-Mira **Deployment** para conocer como desplegar el proyecto.
-
-
-### Pre-requisitos 📋
-
-_Que cosas necesitas para instalar el software y como instalarlas_
-
-```
-Da un ejemplo
-```
-
 ### Instalación 🔧
 
-_Una serie de ejemplos paso a paso que te dice lo que debes ejecutar para tener un entorno de desarrollo ejecutandose_
+Abrir la página web con NPM(Node js)
 
-_Dí cómo será ese paso_
+### Abrir página web
 
-```
-Da un ejemplo
-```
-
-_Y repite_
-
-```
-hasta finalizar
-```
-
-_Finaliza con un ejemplo de cómo obtener datos del sistema o como usarlos para una pequeña demo_
+* [Página web de muestra](https://code-zero-y72m.vercel.app/)
 
 ## Construido con 🛠️
 
@@ -42,11 +17,6 @@ _Finaliza con un ejemplo de cómo obtener datos del sistema o como usarlos para 
 * [React](https://es.react.dev/) - El framework web usado
 * [Visual Studio](https://rometools.github.io/rome/) - Entorno usado para programa
 * [ChatGPT](https://chatgpt.com/) - Entorno usado para programa
-
-
-## Wiki 📖
-
-Puedes encontrar mucho más de cómo utilizar este proyecto en nuestra [Wiki](https://github.com/tu/proyecto/wiki)
 
 ## Control de Tareas 📌
 
