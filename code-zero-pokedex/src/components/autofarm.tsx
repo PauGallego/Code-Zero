@@ -1,16 +1,17 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const App: React.FC = () => {
+const Autofarmapp: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false); // Estado del proceso
   const [logs, setLogs] = useState<string[]>([]); // Almacena los logs visuales
   const [savedZones, setSavedZones] = useState<string[]>([]); // Zonas obtenidas desde localStorage
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null); // Referencia al intervalo
 
   useEffect(() => {
     // Solo accedemos a localStorage en el cliente
     if (typeof window !== "undefined") {
-      const zones = JSON.parse(localStorage.getItem("savedZones") || "[]");
+      const zones = JSON.parse(localStorage.getItem("zones") || "[]");
       setSavedZones(zones);
     }
   }, []); // Se ejecuta solo al montar el componente
@@ -68,7 +69,7 @@ const App: React.FC = () => {
       lastRequestTime[zoneId] = 0;
     });
 
-    const intervalId = setInterval(async () => {
+    intervalRef.current = setInterval(async () => {
       const currentTime = Date.now() / 1000; // Tiempo actual en segundos
 
       for (const zoneId of savedZones) {
@@ -91,11 +92,9 @@ const App: React.FC = () => {
         }
       }
     }, 1000);
-
-    return () => clearInterval(intervalId); // Limpieza del intervalo al desmontar
   }
 
-  const handleClick = async () => {
+  const handleStart = async () => {
     if (!isRunning) {
       setIsRunning(true);
       addLog("Iniciando el proceso...");
@@ -105,10 +104,24 @@ const App: React.FC = () => {
     }
   };
 
+  const handleStop = () => {
+    if (isRunning && intervalRef.current) {
+      clearInterval(intervalRef.current); // Detener el intervalo
+      intervalRef.current = null;
+      setIsRunning(false);
+      addLog("Proceso detenido.");
+    } else {
+      addLog("No hay un proceso en ejecución.");
+    }
+  };
+
   return (
     <div style={{ padding: "20px" }}>
-      <button onClick={handleClick} disabled={isRunning}>
+      <button onClick={handleStart} disabled={isRunning}>
         {isRunning ? "En ejecución..." : "Iniciar"}
+      </button>
+      <button onClick={handleStop} disabled={!isRunning} style={{ marginLeft: "10px" }}>
+        Detener
       </button>
       <div
         style={{
@@ -128,4 +141,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Autofarmapp;
