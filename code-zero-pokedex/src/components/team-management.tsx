@@ -112,7 +112,7 @@ const ApiCycleComponentZones: React.FC = () => {
                 <Button
                   key={zoneId}
                   onClick={() => handleOpenDialog(zoneId)}
-                  className="w-full bg-blue-500 text-white rounded-lg p-4"
+                  className="w-full  bg-[var(--cards-background-modal)] hover:bg-blue-300  rounded-lg p-4"
                 >
                   {zoneName || `Zone ${zoneId}`}
                 </Button>
