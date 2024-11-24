@@ -5,37 +5,30 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { QrCode, Mic, Search, Users, BarChart2, Bot, List, Grid, LogOut, Sword, Map } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { QrCode, Mic, Search, Bot, List, Grid, LogOut, Sword, Map } from 'lucide-react';
+import { motion } from 'framer-motion';
 import RivalAnalysis from './rival-analysis';
 import TeamManagement from './team-management';
 import AIAssistant from './ai-assistant';
 import VoiceRecognitionModal from './voicerecon';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 export default function Pokedex() {
   const teamUrl = 'https://hackeps-poke-backend.azurewebsites.net/teams/';
   const pokemonUrl = 'https://hackeps-poke-backend.azurewebsites.net/pokemons/';
-  const teamId = '63bf06cf-e720-4134-9252-f195668c6048';
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recognizedText, setRecognizedText] = useState('');
-
-  const handleRecognize = (text: string) => {
-    setRecognizedText(text);
-    console.log('Recognized Text:', text);
-  };
-
-  const toggleAIAssistant = () => {
-    setIsAIAssistantOpen((prev) => !prev);
-    console.log('AI Assistant toggled:', !isAIAssistantOpen);
-  };
-
+  const [teamId, setTeamId] = useState<string | null>(null);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [inputTeamId, setInputTeamId] = useState('');
   const [teamData, setTeamData] = useState<any>(null);
   const [pokemonDetails, setPokemonDetails] = useState<any[]>([]);
   const [pokemonCounts, setPokemonCounts] = useState<{ [key: string]: number }>({});
   const [filteredPokemons, setFilteredPokemons] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortOrder, setSortOrder] = useState('name'); // Default sort by name
+  const [sortOrder, setSortOrder] = useState('name');
   const [isScanning, setIsScanning] = useState(false);
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('list');
@@ -45,68 +38,76 @@ export default function Pokedex() {
   const specialImageUrl2 =
     'https://canarddebain.com/cdn/shop/products/CanardPerroquetPirate-Lilalu02.png?v=1640250617';
 
-    if (localStorage.getItem('login') == null) {
-  // Pedimos al usuario que introduzca su Team ID
-  const teamId = prompt('Por favor, introduce tu Team ID para iniciar sesión:');
-  if (teamId) {
-    // Guardamos el Team ID en el localStorage como 'login'
-    localStorage.setItem('login', teamId);
-    location.reload(); // Recargamos la página para aplicar cambios
-  } else {
-    alert('Debes introducir un Team ID para continuar.');
-  }
-}
+  useEffect(() => {
+    const storedTeamId = localStorage.getItem('teamId');
+    if (storedTeamId) {
+      setTeamId(storedTeamId);
+    } else {
+      setIsLoginModalOpen(true); // Open login modal if no Team ID is stored
+    }
+  }, []);
 
-// Función para cerrar sesión
-const handleLogout = () => {
-  console.log('Logging out...');
-  // Eliminamos el dato almacenado con la clave 'login'
-  localStorage.removeItem('login');
-  alert('¡Sesión cerrada!');
-  location.reload(); // Recargamos la página para aplicar cambios
-};
-    
+  const handleLogin = () => {
+    if (inputTeamId.trim()) {
+      localStorage.setItem('teamId', inputTeamId.trim());
+      setTeamId(inputTeamId.trim());
+      setInputTeamId('');
+      setIsLoginModalOpen(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('teamId');
+    window.location.reload();
+  };
+
+  const handleRecognize = (text: string) => {
+    setRecognizedText(text);
+    console.log('Recognized Text:', text);
+  };
 
   const fetchTeamData = async () => {
+    if (!teamId) return; // Prevent fetch if teamId is null
     try {
-      const response = await fetch(`${teamUrl}${teamId}`)
-      if (!response.ok) throw new Error(`Error fetching team: ${response.status}`)
-      const data = await response.json()
-      setTeamData(data)
+      const response = await fetch(`${teamUrl}${teamId}`);
+      if (!response.ok) throw new Error(`Error fetching team: ${response.status}`);
+      const data = await response.json();
+      setTeamData(data);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   const fetchPokemonDetails = async (pokemonId: string) => {
     try {
-      const response = await fetch(`${pokemonUrl}${pokemonId}`)
-      if (!response.ok) throw new Error(`Error fetching Pokémon: ${response.status}`)
-      const data = await response.json()
+      const response = await fetch(`${pokemonUrl}${pokemonId}`);
+      if (!response.ok) throw new Error(`Error fetching Pokémon: ${response.status}`);
+      const data = await response.json();
 
-      // Add special images for specific Pokémon
-      if (data.name === "Cyberquack") {
-        data.image = specialImageUrl
-      } else if (data.name === "Hackduck") {
-        data.image = specialImageUrl2
+      if (data.name === 'Cyberquack') {
+        data.image = specialImageUrl;
+      } else if (data.name === 'Hackduck') {
+        data.image = specialImageUrl2;
       }
 
       setPokemonDetails((prev) =>
         prev.find((p) => p.id === data.id) ? prev : [...prev, data]
-      )
+      );
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   const evolvePokemon = async (pokemonId: string) => {
+    if (!teamData) return;
+
     const duplicates = teamData.captured_pokemons
       .filter((p: { pokemon_id: string }) => p.pokemon_id === pokemonId)
-      .map((p: { id: string }) => p.id)
+      .map((p: { id: string }) => p.id);
 
     if (duplicates.length < 3) {
-      alert('You need at least 3 duplicates to evolve this Pokémon.')
-      return
+      alert('You need at least 3 duplicates to evolve this Pokémon.');
+      return;
     }
 
     try {
@@ -117,70 +118,95 @@ const handleLogout = () => {
           pokemon_uuid_list: duplicates.slice(0, 3),
           team_id: teamId,
         }),
-      })
+      });
 
-      if (!response.ok) throw new Error('Failed to evolve Pokémon.')
-      alert('Pokémon evolved successfully.')
-      fetchTeamData()
+      if (!response.ok) throw new Error('Failed to evolve Pokémon.');
+      alert('Pokémon evolved successfully.');
+      fetchTeamData(); // Refresh the team data after evolution
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   const evolveAll = async () => {
+    if (!teamData) return;
+
     const evolvablePokemons = pokemonDetails.filter((pokemon) => {
-      const count = pokemonCounts[pokemon.id] || 0
-      return count >= 3 && pokemon.evolves_to
-    })
+      const count = pokemonCounts[pokemon.id] || 0;
+      return count >= 3 && pokemon.evolves_to;
+    });
 
     for (const pokemon of evolvablePokemons) {
-      await evolvePokemon(pokemon.id)
+      await evolvePokemon(pokemon.id);
     }
 
-    alert('Evolved all eligible Pokémon.')
-  }
+    alert('Evolved all eligible Pokémon.');
+  };
 
   useEffect(() => {
-    fetchTeamData()
-  }, [])
+    if (teamId) {
+      fetchTeamData();
+    }
+  }, [teamId]);
 
   useEffect(() => {
     if (teamData && teamData.captured_pokemons) {
-      const counts: { [key: string]: number } = {}
+      const counts: { [key: string]: number } = {};
       teamData.captured_pokemons.forEach((p: { pokemon_id: string }) => {
-        counts[p.pokemon_id] = (counts[p.pokemon_id] || 0) + 1
-      })
-      setPokemonCounts(counts)
+        counts[p.pokemon_id] = (counts[p.pokemon_id] || 0) + 1;
+      });
+      setPokemonCounts(counts);
 
-      Object.keys(counts).forEach(fetchPokemonDetails)
+      Object.keys(counts).forEach(fetchPokemonDetails);
     }
-  }, [teamData])
+  }, [teamData]);
 
   useEffect(() => {
     const sorted = [...pokemonDetails].filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    // Sorting logic
+    );
     sorted.sort((a, b) => {
       if (sortOrder === 'name') {
-        return a.name.localeCompare(b.name)
+        return a.name.localeCompare(b.name);
       } else if (sortOrder === 'id') {
-        return a.id - b.id
+        return a.id - b.id;
       } else if (sortOrder === 'count') {
-        return (pokemonCounts[b.id] || 0) - (pokemonCounts[a.id] || 0)
+        return (pokemonCounts[b.id] || 0) - (pokemonCounts[a.id] || 0);
       } else if (sortOrder === 'type') {
-        return (a.types?.[0]?.type?.name || '').localeCompare(b.types?.[0]?.type?.name || '')
+        return (a.types?.[0]?.type?.name || '').localeCompare(b.types?.[0]?.type?.name || '');
       } else if (sortOrder === 'evolves') {
-        return a.evolves_to ? -1 : 1
+        return a.evolves_to ? -1 : 1;
       }
-      return 0
-    })
+      return 0;
+    });
 
-    setFilteredPokemons(sorted)
-  }, [searchQuery, sortOrder, pokemonDetails, pokemonCounts])
+    setFilteredPokemons(sorted);
+  }, [searchQuery, sortOrder, pokemonDetails, pokemonCounts]);
 
   return (
+
+    
+
+
+
     <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
+ <Dialog open={isLoginModalOpen} onOpenChange={() => setIsLoginModalOpen(false)}>
+  <DialogContent className="sm:max-w-[425px]">
+    <DialogHeader>
+      <DialogTitle>Login</DialogTitle>
+      <DialogDescription>Enter your Team ID to continue.</DialogDescription>
+    </DialogHeader>
+    <Input
+      value={inputTeamId}
+      onChange={(e) => setInputTeamId(e.target.value)}
+      placeholder="Enter your Team ID"
+    />
+    <div className="flex justify-end mt-4">
+      <Button onClick={handleLogin}>Login</Button>
+    </div>
+  </DialogContent>
+</Dialog>
+
       <AIAssistant isOpen={isAIAssistantOpen} onClose={() => setIsAIAssistantOpen(false)} />
       <CardContent className="p-6">
         <div className="flex flex-col items-center md:flex-row md:justify-between mb-4">
