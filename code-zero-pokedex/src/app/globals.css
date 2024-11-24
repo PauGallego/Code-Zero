@@ -5,25 +5,26 @@
 @layer base {
   /* Fuentes personalizadas */
   @font-face {
-    font-family: 'PokemonDS';
-    src: url('/pokemon-ds-font.ttf') format('truetype');
+    font-family: "PokemonDS";
+    src: url("/pokemon-ds-font.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
   }
 
   @font-face {
-    font-family: 'PokemonTitle';
-    src: url('/title2.ttf') format('truetype');
+    font-family: "PokemonTitle";
+    src: url("/title2.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
   }
 
-  html, body {
-    font-family: 'PokemonDS', sans-serif;
+  html,
+  body {
+    font-family: "PokemonDS", sans-serif;
   }
 
   h1 {
-    font-family: 'PokemonTitle', sans-serif;
+    font-family: "PokemonTitle", sans-serif;
   }
 
   * {
@@ -32,7 +33,7 @@
 
   body {
     @apply bg-background text-foreground;
-    background: url('/bkg.png') no-repeat center center fixed;
+    background: url("/bkg.png") no-repeat center center fixed;
     background-size: cover;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
@@ -41,22 +42,28 @@
   :root {
     --background: #ffffff; /* Fondo blanco */
     --foreground: 0 0% 0%; /* Texto negro (antes 0 0% 3.9%) */
-    --primary: #1a1a1a;    /* Gris oscuro (antes 0 0% 9%) */
+    --primary: #1a1a1a; /* Gris oscuro (antes 0 0% 9%) */
     --primary-foreground: #fafafa; /* Blanco claro (antes 0 0% 98%) */
     --pokemon-red: #ff0000; /* Rojo puro (antes 0 100% 50%) */
     --radius: 0.5rem;
     --cards-background-modal: #d2d2d2de; /* Fondo para tarjetas */
     --cards-background: #ebebeb; /* Fondo para tarjetas */
     --borde-items: #191919;
-
+    --switch-bg: #f0f0f0;
+    --switch-icon-color: #333;
     /* Otros colores */
+  }
+
+  [data-theme="dark"] {
+    --switch-bg: #333;
+    --switch-icon-color: #f0f0f0;
   }
 
   /* Variables para modo oscuro */
   .dark {
     --background: #424242; /* Fondo gris oscuro */
     --foreground: 0 0% 100%; /* Texto blanco */
-    --primary: #fafafa;    /* Blanco claro (antes 0 0% 98%) */
+    --primary: #fafafa; /* Blanco claro (antes 0 0% 98%) */
     --primary-foreground: #1a1a1a; /* Gris oscuro (antes 0 0% 9%) */
     --pokemon-red: #dc143c; /* Rojo oscuro (#dc143c, antes 220 70% 50%) */
     --cards-background: #555555; /* Fondo para tarjetas */
