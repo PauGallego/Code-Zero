@@ -135,18 +135,18 @@ const ApiTournamentComponent: React.FC = () => {
             ) : (
               <div className="overflow-y-auto h-[400px] ">
                 <h3 className="text-lg font-bold mb-2">Rankings</h3>
-                <table className="w-full table-auto border-collapse border border-gray-300">
+                <table className="w-full table-auto border-collapse border border-[(--borde-items)] ">
                   <thead>
                     <tr>
-                      <th className="border border-gray-300 px-2 py-1">Rank</th>
-                      <th className="border border-gray-300 px-2 py-1">Team Name</th>
+                      <th className="border border-[(--borde-items)] px-2 py-1">Rank</th>
+                      <th className="border border-[(--borde-items)]  px-2 py-1">Team Name</th>
                     </tr>
                   </thead>
                   <tbody>
                     {selectedTournament.teams_positions.map((team: any, index: number) => (
                       <tr key={team.team_id}>
-                        <td className="border border-gray-300 px-2 py-1">{index + 1}</td>
-                        <td className="border border-gray-300 px-2 py-1">
+                        <td className="border border-[(--borde-items)]  px-2 py-1">{index + 1}</td>
+                        <td className="border border-[(--borde-items)]  px-2 py-1">
                           {teamNames[team.team_id] || ` ${team.team_id}`}
                         </td>
                       </tr>
@@ -155,18 +155,18 @@ const ApiTournamentComponent: React.FC = () => {
                 </table>
 
                 <h3 className="text-lg font-bold mt-4 mb-2">Match Results</h3>
-                <table className="w-full table-auto border-collapse border border-gray-300">
+                <table className="w-full table-auto border-collapse border border-[(--borde-items)] ">
                   <thead>
                     <tr>
-                      <th className="border border-gray-300 px-2 py-1">Match</th>
-                      <th className="border border-gray-300 px-2 py-1">Winner</th>
+                      <th className="border border-[(--borde-items)]  px-2 py-1">Match</th>
+                      <th className="border border-[(--borde-items)]  px-2 py-1">Winner</th>
                     </tr>
                   </thead>
                   <tbody>
                     {selectedTournament.tournament_combats.map((combat: any, index: number) => (
                       <tr key={index}>
-                        <td className="border border-gray-300 px-2 py-1">{index + 1}</td>
-                        <td className="border border-gray-300 px-2 py-1">
+                        <td className="border border-[(--borde-items)]  px-2 py-1">{index + 1}</td>
+                        <td className="border border-[(--borde-items)]  px-2 py-1">
                           {teamNames[combat.winner] || `${combat.winner}`}
                         </td>
                       </tr>
