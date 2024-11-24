@@ -46,6 +46,8 @@
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "^18",
     "@types/react-speech-recognition": "^3.9.5",
+    "@types/recorder-js": "^1.0.4",
+    "@types/regenerator-runtime": "^0.13.8",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "postcss": "^8.4.49",

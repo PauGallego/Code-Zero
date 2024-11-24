@@ -1,46 +1,51 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 
 const Autofarmapp: React.FC = () => {
-  const [isRunning, setIsRunning] = useState(false); // Estado del proceso
-  const [logs, setLogs] = useState<string[]>([]); // Almacena los logs visuales
-  const [savedZones, setSavedZones] = useState<string[]>([]); // Zonas obtenidas desde localStorage
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null); // Referencia al intervalo
+  const [isRunning, setIsRunning] = useState(false);
+  const [logs, setLogs] = useState<string[]>([]);
+  const [savedZones, setSavedZones] = useState<string[]>([]);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    // Solo accedemos a localStorage en el cliente
     if (typeof window !== "undefined") {
-      const zones = JSON.parse(localStorage.getItem("zones") || "[]");
-      setSavedZones(zones);
+      try {
+        const zones = JSON.parse(localStorage.getItem("zones") || "[]");
+        setSavedZones(zones);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error("Error reading zones from localStorage:", error.message);
+        } else {
+          console.error("Unknown error reading zones from localStorage.");
+        }
+        setLogs((prevLogs) => [...prevLogs, "Error al leer las zonas almacenadas."]);
+      }
     }
-  }, []); // Se ejecuta solo al montar el componente
+  }, []);
 
   const urlBasePost = "https://hackeps-poke-backend.azurewebsites.net/events/";
   const urlBaseGet = "https://hackeps-poke-backend.azurewebsites.net/zones/";
 
-  // Función para obtener dinámicamente el payload
   const getPayload = () => {
     const teamId = localStorage.getItem("teamId");
     if (!teamId) {
       throw new Error("Team ID not found in localStorage");
     }
-    return {
-      team_id: teamId,
-    };
+    return { team_id: teamId };
   };
 
   const headers = {
     "Content-Type": "application/json",
   };
 
-  const lastRequestTime: Record<string, number> = {};
+  const lastRequestTime = useRef<Record<string, number>>({});
 
   const addLog = (message: string) => {
-    setLogs((prevLogs) => [...prevLogs, message]); // Agregar mensajes al log
+    setLogs((prevLogs) => [...prevLogs, message]);
   };
 
-  async function obtenerCooldownPeriod(zoneId: string): Promise<number | null> {
+  const obtenerCooldownPeriod = async (zoneId: string): Promise<number | null> => {
     const url = `${urlBaseGet}${zoneId}`;
     try {
       const response = await fetch(url, { headers });
@@ -50,15 +55,19 @@ const Autofarmapp: React.FC = () => {
       addLog(`Cooldown period para zona ${zoneId}: ${cooldownPeriod} segundos`);
       return cooldownPeriod;
     } catch (error) {
-      addLog(`Error al obtener cooldown_period para zona ${zoneId}: ${error}`);
-      return null; // Devuelve null en caso de error
+      if (error instanceof Error) {
+        addLog(`Error al obtener cooldown_period para zona ${zoneId}: ${error.message}`);
+      } else {
+        addLog(`Unknown error al obtener cooldown_period para zona ${zoneId}`);
+      }
+      return null;
     }
-  }
+  };
 
-  async function realizarRequest(zoneId: string): Promise<void> {
+  const realizarRequest = async (zoneId: string): Promise<void> => {
     const url = `${urlBasePost}${zoneId}`;
     try {
-      const payload = getPayload(); // Obtén dinámicamente el payload
+      const payload = getPayload();
       const response = await fetch(url, {
         method: "POST",
         headers,
@@ -68,39 +77,44 @@ const Autofarmapp: React.FC = () => {
       const responseData = await response.json();
       addLog(`Request a zona ${zoneId} exitosa. Respuesta: ${JSON.stringify(responseData)}`);
     } catch (error) {
-      addLog(`Error al realizar la request a ${zoneId}: ${error}`);
+      if (error instanceof Error) {
+        addLog(`Error al realizar la request a ${zoneId}: ${error.message}`);
+      } else {
+        addLog(`Unknown error al realizar la request a ${zoneId}`);
+      }
     }
-  }
+  };
 
-  async function main() {
-    savedZones.forEach((zoneId: string) => {
-      lastRequestTime[zoneId] = 0;
+  const main = async () => {
+    const currentZones = [...savedZones];
+    currentZones.forEach((zoneId) => {
+      lastRequestTime.current[zoneId] = 0;
     });
 
     intervalRef.current = setInterval(async () => {
-      const currentTime = Date.now() / 1000; // Tiempo actual en segundos
+      const currentTime = Date.now() / 1000;
 
-      for (const zoneId of savedZones) {
+      for (const zoneId of currentZones) {
         const cooldownPeriod = await obtenerCooldownPeriod(zoneId);
         if (cooldownPeriod === null) {
           addLog(`Saltando zona ${zoneId} por error al obtener cooldown_period.`);
           continue;
         }
 
-        const lastTime = lastRequestTime[zoneId];
+        const lastTime = lastRequestTime.current[zoneId];
         const elapsedTime = currentTime - lastTime;
 
         if (elapsedTime >= cooldownPeriod + 10) {
           addLog(`Enviando POST para la zona ${zoneId} (última solicitud hace ${elapsedTime.toFixed(2)} segundos)`);
           await realizarRequest(zoneId);
-          lastRequestTime[zoneId] = Date.now() / 1000;
+          lastRequestTime.current[zoneId] = Date.now() / 1000;
         } else {
           const remainingTime = (cooldownPeriod + 10) - elapsedTime;
           addLog(`Zona ${zoneId}: en cooldown, quedan ${remainingTime.toFixed(2)} segundos.`);
         }
       }
     }, 1000);
-  }
+  };
 
   const handleStart = async () => {
     if (!isRunning) {
@@ -109,7 +123,11 @@ const Autofarmapp: React.FC = () => {
         addLog("Iniciando el proceso...");
         await main();
       } catch (error) {
-        addLog(`Error al iniciar el proceso: ${error.message}`);
+        if (error instanceof Error) {
+          addLog(`Error al iniciar el proceso: ${error.message}`);
+        } else {
+          addLog("Unknown error al iniciar el proceso.");
+        }
         setIsRunning(false);
       }
     } else {
@@ -119,7 +137,7 @@ const Autofarmapp: React.FC = () => {
 
   const handleStop = () => {
     if (isRunning && intervalRef.current) {
-      clearInterval(intervalRef.current); // Detener el intervalo
+      clearInterval(intervalRef.current);
       intervalRef.current = null;
       setIsRunning(false);
       addLog("Proceso detenido.");

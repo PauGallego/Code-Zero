@@ -1,70 +1,87 @@
-# Getting Started with Create React App
+# Pokedex 2.0 por Code-Zero
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+En este proyecto, hemos hecho una Pokédex, partiendo como base de una API que nos ofrece la capacidad de capturar Pokémon y almacenarlos por zonas, relacionadas a un equipo, para después participar en torneos Pokémon.
 
-## Available Scripts
+## Comenzando 🚀
 
-In the project directory, you can run:
+_Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas._
 
-### `npm start`
+Mira **Deployment** para conocer como desplegar el proyecto.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Pre-requisitos 📋
 
-### `npm test`
+_Que cosas necesitas para instalar el software y como instalarlas_
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+Da un ejemplo
+```
 
-### `npm run build`
+### Instalación 🔧
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+_Una serie de ejemplos paso a paso que te dice lo que debes ejecutar para tener un entorno de desarrollo ejecutandose_
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+_Dí cómo será ese paso_
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+Da un ejemplo
+```
 
-### `npm run eject`
+_Y repite_
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+hasta finalizar
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+_Finaliza con un ejemplo de cómo obtener datos del sistema o como usarlos para una pequeña demo_
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Ejecutando las pruebas ⚙️
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+_Explica como ejecutar las pruebas automatizadas para este sistema_
 
-## Learn More
+### Analice las pruebas end-to-end 🔩
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+_Explica que verifican estas pruebas y por qué_
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+Da un ejemplo
+```
 
-### Code Splitting
+### Y las pruebas de estilo de codificación ⌨️
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+_Explica que verifican estas pruebas y por qué_
 
-### Analyzing the Bundle Size
+```
+Da un ejemplo
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Construido con 🛠️
 
-### Making a Progressive Web App
+* [Javascrypt](https://developer.mozilla.org/es/docs/Web/JavaScript) - El framework web usado
+* [Node](https://nodejs.org/en) - El framework web usado
+* [React](https://es.react.dev/) - El framework web usado
+* [Visual Studio](https://rometools.github.io/rome/) - Entorno usado para programa
+* [ChatGPT](https://chatgpt.com/) - Entorno usado para programa
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
+## Wiki 📖
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Puedes encontrar mucho más de cómo utilizar este proyecto en nuestra [Wiki](https://github.com/tu/proyecto/wiki)
 
-### Deployment
+## Control de Tareas 📌
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Usamos Trello para el control de tareas. Para el seguimiento de todas las tareas, entra en el siguiente link [Tablero Trello](https://trello.com/invite/b/6741dd36562b40556e2b362f/ATTIf1566698819351aa8c6261e5884bb9f71495BCA4/hackathon-lleida-codezero).
 
-### `npm run build` fails to minify
+## Autores ✒️
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* **Pau Gallego** - *Frontend+Interacción con API* - [PauGallego](https://github.com/PauGallego)
+* **Arnau Briet** - *Frontend* - [ArnauBriet](https://github.com/bri3t)
+* **Samuel Reginaldo** - *Interacción con API* - [SamuelReginaldo](https://github.com/SamuelReginaldo2)
+* **David Pardo** - *Documentación* - [DavidPardo](https://github.com/Crosvy111)
+
+También puedes mirar la lista de todos los [contribuyentes](https://github.com/your/project/contributors) quíenes han participado en este proyecto. 
+
+## Licencia 📄
+
+Este proyecto está bajo la Licencia (Tu Licencia) - mira el archivo [LICENSE.md](LICENSE.md) para detalles
+
