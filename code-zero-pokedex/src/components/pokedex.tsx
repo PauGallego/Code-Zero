@@ -363,7 +363,7 @@ export default function Pokedex() {
     <Input
       value={inputTeamId}
       onChange={(e) => setInputTeamId(e.target.value)}
-      placeholder="Enter your Team ID"
+      placeholder="Introduce tu ID de equipo"
     />
     {errorMessage && (
       <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
