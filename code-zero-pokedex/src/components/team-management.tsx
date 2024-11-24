@@ -72,7 +72,7 @@ const ApiCycleComponentZones: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Zones and Pokémon</h1>
+      <h2 className="text-2xl font-bold mb-4">Zones and Pokémon</h2>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
       {Object.keys(pokemonByLocation).length > 0 ? (
