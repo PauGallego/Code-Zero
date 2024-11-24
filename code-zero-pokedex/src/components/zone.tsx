@@ -169,17 +169,16 @@ const EventTriggerComponent: React.FC = () => {
             border: "none",
             borderRadius: "5px",
             backgroundColor: "#007bff",
-            color: "#fff",
             marginBottom: "20px",
           }}
         >
-          Open Camera
+          Abrir cámara
         </button>
       )}
       <div style={{ marginBottom: "20px" }}>
         <input
           type="text"
-          placeholder="Enter Zone ID manually"
+          placeholder="ID de la zona manualmente"
           value={manualZoneId}
           onChange={(e) => setManualZoneId(e.target.value)}
           style={{
@@ -199,12 +198,11 @@ const EventTriggerComponent: React.FC = () => {
             border: "none",
             borderRadius: "5px",
             backgroundColor: "#28a745",
-            color: "#fff",
             marginTop: "10px",
             width: "100%",
           }}
         >
-          Add Zone Manually
+          Añadir zona manualmente
         </button>
       </div>
       {zoneId && (

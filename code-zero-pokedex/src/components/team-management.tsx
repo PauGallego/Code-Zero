@@ -99,7 +99,7 @@ const ApiCycleComponentZones: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Zones and Pokémon</h2>
+      <h2 className="text-2xl font-bold mb-4">Zonas y Pokémons</h2>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
   
       {Object.keys(pokemonByLocation).length > 0 ? (
@@ -132,7 +132,7 @@ const ApiCycleComponentZones: React.FC = () => {
           <DialogContent className="sm:max-w-[600px] bg-[var(--cards-background-modal)]">
             <DialogHeader>
               <DialogTitle>{zonesData[selectedZone] || `Zone ${selectedZone}`}</DialogTitle>
-              <DialogDescription>Pokémon found in this zone:</DialogDescription>
+              <DialogDescription>Pokémons encontrados en esta zona:</DialogDescription>
             </DialogHeader>
             <div className="overflow-y-auto h-[400px] space-y-4">
               <ul>
@@ -145,7 +145,7 @@ const ApiCycleComponentZones: React.FC = () => {
                     />
                     <div>
                       <p><strong>ID:</strong> {pokemon.id}</p>
-                      <p><strong>Name:</strong> {pokemon.name}</p>
+                      <p><strong>Nombre:</strong> {pokemon.name}</p>
                     </div>
                   </li>
                 ))}
@@ -194,15 +194,15 @@ const ApiCycleComponentZones: React.FC = () => {
                     console.error(err);
                   }
                 }}
-                className="w-full bg-green-500 text-white rounded-lg"
+                className="w-full bg-green-500   rounded-lg"
               >
-                Hunt in Zone
+                Área de aparición
               </Button>
               <Button
                 onClick={handleCloseDialog}
-                className="w-full bg-red-500 text-white rounded-lg"
+                className="w-full bg-red-500  rounded-lg"
               >
-                Close
+                Cerrar
               </Button>
             </div>
           </DialogContent>
@@ -227,9 +227,9 @@ const ApiCycleComponentZones: React.FC = () => {
               onClick={() =>
                 setCaptureDialogState({ isOpen: false, message: "", success: false })
               }
-              className="bg-blue-500 text-white hover:bg-blue-600"
+              className="bg-blue-500 hover:bg-blue-600"
             >
-              {captureDialogState.success ? "Reload" : "Close"}
+              {captureDialogState.success ? "Recargar" : "Cerrar"}
             </Button>
           </div>
         </DialogContent>
