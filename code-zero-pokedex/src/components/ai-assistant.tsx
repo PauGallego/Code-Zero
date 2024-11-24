@@ -110,7 +110,7 @@ export default function AIAssistant({ isOpen, onClose }: AIAssistantProps) {
                     overflowWrap: 'break-word',
                   }}
                 >
-                  Escriviendo...
+                  Escribiendo...
                 </div>
               </div>
             )}
