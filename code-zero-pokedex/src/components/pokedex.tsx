@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { QrCode, Mic, Search, Bot, List, Grid, LogOut, Sword, Map, EggIcon, NutIcon, ComputerIcon } from 'lucide-react';
+import { QrCode, Mic, Search, Bot, List, Grid, LogOut, Sword, Map,  ComputerIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import RivalAnalysis from './rival-analysis';
 import TeamManagement from './team-management';
@@ -25,7 +25,6 @@ export default function Pokedex() {
   const [recognizedText, setRecognizedText] = useState('');
   const [teamId, setTeamId] = useState<string | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [inputTeamId, setInputTeamId] = useState('');
   const [teamData, setTeamData] = useState<any>(null);
   const [pokemonDetails, setPokemonDetails] = useState<any[]>([]);
@@ -33,7 +32,6 @@ export default function Pokedex() {
   const [filteredPokemons, setFilteredPokemons] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('name');
-  const [isScanning, setIsScanning] = useState(false);
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('list');
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
