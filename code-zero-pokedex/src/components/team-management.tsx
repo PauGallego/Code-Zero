@@ -14,6 +14,20 @@ const ApiCycleComponentZones: React.FC = () => {
   const [selectedZone, setSelectedZone] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // Load zones from localStorage
+  const getZonesFromLocalStorage = (): string[] => {
+    return JSON.parse(localStorage.getItem("zones") || "[]");
+  };
+
+  // Add zone to localStorage if not exists
+  const addZoneToLocalStorage = (zoneId: string) => {
+    const localZones = getZonesFromLocalStorage();
+    if (!localZones.includes(zoneId)) {
+      localZones.push(zoneId);
+      localStorage.setItem("zones", JSON.stringify(localZones));
+    }
+  };
+
   // Fetch Pokémon details
   const fetchPokemonDetails = async () => {
     try {
@@ -21,6 +35,13 @@ const ApiCycleComponentZones: React.FC = () => {
       if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
       const data = await response.json();
       setPokemonDetails(data);
+
+      // Process Pokémon zones
+      data.forEach((pokemon: any) => {
+        pokemon.location_area_encounters.forEach((zoneId: string) => {
+          addZoneToLocalStorage(zoneId); // Add zone to localStorage if not exists
+        });
+      });
     } catch (err: any) {
       console.error("Error fetching Pokémon data:", err.message);
       setError(err.message);
@@ -74,25 +95,33 @@ const ApiCycleComponentZones: React.FC = () => {
     <div>
       <h2 className="text-2xl font-bold mb-4">Zones and Pokémon</h2>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
-
+  
       {Object.keys(pokemonByLocation).length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Object.entries(zonesData)
-            .sort((a, b) => a[1].localeCompare(b[1])) // Sort by zone name
-            .map(([zoneId, zoneName]) => (
-              <Button
-                key={zoneId}
-                onClick={() => handleOpenDialog(zoneId)}
-                className="w-full bg-blue-500 text-white rounded-lg p-4"
-              >
-                {zoneName || `Zone ${zoneId}`}
-              </Button>
-            ))}
+        <div className="overflow-y-auto max-h-screen px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Object.entries(zonesData)
+              .filter(([zoneId]) => getZonesFromLocalStorage().includes(zoneId)) // Show only zones in localStorage
+              .sort((a, b) => a[1].localeCompare(b[1])) // Sort by zone name
+              .map(([zoneId, zoneName]) => (
+                <Button
+                  key={zoneId}
+                  onClick={() => handleOpenDialog(zoneId)}
+                  className="w-full bg-blue-500 text-white rounded-lg p-4"
+                >
+                  {zoneName || `Zone ${zoneId}`}
+                </Button>
+              ))}
+            {/* Add 4 invisible divs to ensure proper rendering */}
+            <div className="h-16 invisible"></div>
+            <div className="h-16 invisible"></div>
+            <div className="h-16 invisible"></div>
+            <div className="h-16 invisible"></div>
+          </div>
         </div>
       ) : (
         <p>Loading Pokémon details...</p>
       )}
-
+  
       {selectedZone && (
         <Dialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
           <DialogContent className="sm:max-w-[600px]">
@@ -130,6 +159,7 @@ const ApiCycleComponentZones: React.FC = () => {
       )}
     </div>
   );
+  
 };
 
 export default ApiCycleComponentZones;

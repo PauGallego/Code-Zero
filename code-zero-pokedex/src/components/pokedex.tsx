@@ -115,13 +115,25 @@ const handleLogin = async () => {
       const response = await fetch(`${pokemonUrl}${pokemonId}`);
       if (!response.ok) throw new Error(`Error fetching Pokémon: ${response.status}`);
       const data = await response.json();
-
+  
       if (data.name === 'Cyberquack') {
         data.image = specialImageUrl;
       } else if (data.name === 'Hackduck') {
         data.image = specialImageUrl2;
       }
-
+  
+      // Check and update local storage with zones
+      const localStorageZones = JSON.parse(localStorage.getItem("zones") || "[]");
+      const pokemonZones = data.location_area_encounters || [];
+  
+      pokemonZones.forEach((zoneId: string) => {
+        if (!localStorageZones.includes(zoneId)) {
+          localStorageZones.push(zoneId);
+        }
+      });
+  
+      localStorage.setItem("zones", JSON.stringify(localStorageZones));
+  
       setPokemonDetails((prev) =>
         prev.find((p) => p.id === data.id) ? prev : [...prev, data]
       );
@@ -129,6 +141,7 @@ const handleLogin = async () => {
       console.error(err);
     }
   };
+  
 
   const evolvePokemon = async (pokemonId: string) => {
     if (!teamData) return;
