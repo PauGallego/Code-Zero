@@ -41,7 +41,7 @@ export default function AIAssistant({ isOpen, onClose }: AIAssistantProps) {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY_CHAT}`,
             },
           }
         )
@@ -82,20 +82,41 @@ export default function AIAssistant({ isOpen, onClose }: AIAssistantProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col h-[300px]">
-          <div className="flex-1 overflow-y-auto mb-4 space-y-4">
-            {conversation.map((message, index) => (
-              <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`rounded-lg p-2 max-w-[80%] ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
-                  {message.content}
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex justify-start">
-                <div className="rounded-lg p-2 max-w-[80%] bg-gray-200">Typing...</div>
-              </div>
-            )}
-          </div>
+        <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+  {conversation.map((message, index) => (
+    <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+    <div
+      className={`rounded-lg p-3 max-w-[100%] sm:max-w-[65%] break-words ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+      style={{
+        wordWrap: 'break-word',
+        overflowWrap: 'break-word',
+        wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
+        padding: '10px',
+        margin: '5px 0',
+      }}
+    >
+      {message.content}
+    </div>
+  </div>
+  
+  ))}
+  {loading && (
+    <div className="flex justify-start">
+      <div
+        className="rounded-lg p-3 max-w-[65%] bg-gray-200"
+        style={{
+          wordWrap: 'break-word',
+          overflowWrap: 'break-word',
+        }}
+      >
+        Typing...
+      </div>
+    </div>
+  )}
+</div>
+
+
           <div className="flex items-center">
             <Input
               value={input}
