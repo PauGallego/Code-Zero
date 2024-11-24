@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
@@ -70,10 +68,14 @@ const ApiTournamentComponent: React.FC = () => {
   }, []);
 
   const handleTournamentClick = async (tournament: any) => {
+    if (isLoading) return; // Prevent multiple clicks
     setIsLoading(true);
-    setSelectedTournament(tournament);
-    await resolveCombatLosers(tournament);
-    setIsLoading(false);
+    try {
+      setSelectedTournament(tournament);
+      await resolveCombatLosers(tournament);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDialogClose = () => {
@@ -100,9 +102,14 @@ const ApiTournamentComponent: React.FC = () => {
               {tournament.winner && (
                 <button
                   onClick={() => handleTournamentClick(tournament)}
-                  className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                  disabled={isLoading} // Disable button during loading
+                  className={`mt-2 px-4 py-2 rounded ${
+                    isLoading
+                      ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  }`}
                 >
-                  View Leaderboard
+                  {isLoading ? "Loading..." : "View Leaderboard"}
                 </button>
               )}
             </div>
