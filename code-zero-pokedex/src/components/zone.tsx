@@ -236,8 +236,8 @@ const EventTriggerComponent: React.FC = () => {
             color: responseMessage.includes("exitosamente")
               ? "green"
               : responseMessage.includes("No se capturó")
-              ? "orange"
-              : "red",
+                ? "orange"
+                : "red",
           }}
         >
           {responseMessage}
