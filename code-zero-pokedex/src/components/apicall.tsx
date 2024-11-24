@@ -24,7 +24,7 @@ const ApiCycleComponent: React.FC = () => {
   );
   const [filteredPokemons, setFilteredPokemons] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [showDuplicatesOnly, setShowDuplicatesOnly] = useState<boolean>(false);
+  const [showDuplicatesOnly, ] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<string>("name");
   const [error, setError] = useState<string | null>(null);
 
