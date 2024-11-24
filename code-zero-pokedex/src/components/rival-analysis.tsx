@@ -140,7 +140,7 @@ const ApiTournamentComponent: React.FC = () => {
                       <tr key={team.team_id}>
                         <td className="border border-gray-300 px-2 py-1">{index + 1}</td>
                         <td className="border border-gray-300 px-2 py-1">
-                          {teamNames[team.team_id] || `Team ${team.team_id}`}
+                          {teamNames[team.team_id] || ` ${team.team_id}`}
                         </td>
                       </tr>
                     ))}
@@ -160,7 +160,7 @@ const ApiTournamentComponent: React.FC = () => {
                       <tr key={index}>
                         <td className="border border-gray-300 px-2 py-1">{index + 1}</td>
                         <td className="border border-gray-300 px-2 py-1">
-                          {teamNames[combat.winner] || `Team ${combat.winner}`}
+                          {teamNames[combat.winner] || `${combat.winner}`}
                         </td>
                       </tr>
                     ))}
