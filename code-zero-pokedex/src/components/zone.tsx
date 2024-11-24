@@ -12,7 +12,6 @@ const EventTriggerComponent: React.FC = () => {
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
-  const [stream, setStream] = useState<MediaStream | null>(null); // Guarda el MediaStream para detenerlo
 
   useEffect(() => {
     // Inicia el escáner una vez que el videoRef esté disponible
@@ -63,23 +62,24 @@ const EventTriggerComponent: React.FC = () => {
         }
       );
   
-      // Guarda el MediaStream
-      setStream(resultStream);
+      // Ya no es necesario almacenar el MediaStream en el estado
+      // setStream(resultStream); // Este paso se ha eliminado
     } catch (err: any) {
       console.error("Error initializing scanner:", err);
       setError(err.message || "An error occurred while accessing the camera.");
       setIsScanning(false);
     }
   };
-  
-  
 
   const stopScanner = () => {
-    if (stream) {
-      // Detén todos los tracks de video
-      stream.getTracks().forEach((track) => track.stop());
-      setStream(null); // Limpia el stream
-      console.log("Scanner stopped.");
+    if (videoRef.current) {
+      // Detener todos los tracks de video asociados al videoRef (MediaStream)
+      const stream = videoRef.current.srcObject as MediaStream;
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+        videoRef.current.srcObject = null; // Limpiar la fuente del video
+        console.log("Scanner stopped.");
+      }
     }
   };
 
