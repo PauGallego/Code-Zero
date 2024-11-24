@@ -121,7 +121,7 @@ const ApiTournamentComponent: React.FC = () => {
 
       {selectedTournament && (
         <Dialog open={!!selectedTournament} onOpenChange={handleDialogClose}>
-          <DialogContent>
+          <DialogContent className="bg-[var(--cards-background-modal)]">
             <DialogHeader>
               <DialogTitle>
                 Tournament ID: {selectedTournament.id}
@@ -133,7 +133,7 @@ const ApiTournamentComponent: React.FC = () => {
             {isLoading ? (
               <p>Loading leaderboard...</p>
             ) : (
-              <div className="overflow-y-auto h-[400px]">
+              <div className="overflow-y-auto h-[400px] ">
                 <h3 className="text-lg font-bold mb-2">Rankings</h3>
                 <table className="w-full table-auto border-collapse border border-gray-300">
                   <thead>

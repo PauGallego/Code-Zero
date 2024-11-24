@@ -434,28 +434,28 @@ export default function Pokedex() {
           <TabsList className="flex md:grid md:grid-cols-4 border border-[var(--borde-items)] justify-between items-center w-full mb-4 bg-[var(--cards-background)] h-[40px] md:h-[55px] p-2">
             <TabsTrigger
               value="list"
-              className="flex items-center justify-center data-[state=active]:bg-red-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+              className="flex items-center justify-center data-[state=active]:bg-red-500  px-2 py-1 rounded-md"
             >
               <List size={24} className="md:mr-2" />
               <span className="hidden md:inline">List</span>
             </TabsTrigger>
             <TabsTrigger
               value="grid"
-              className="flex items-center justify-center data-[state=active]:bg-blue-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+              className="flex items-center justify-center data-[state=active]:bg-blue-500  px-2 py-1 rounded-md"
             >
               <Grid size={24} className="md:mr-2" />
               <span className="hidden md:inline">Grid</span>
             </TabsTrigger>
             <TabsTrigger
               value="team"
-              className="flex items-center justify-center data-[state=active]:bg-green-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+              className="flex items-center justify-center data-[state=active]:bg-green-500 d px-2 py-1 rounded-md"
             >
               <Map size={24} className="md:mr-2" />
               <span className="hidden md:inline">Zonas</span>
             </TabsTrigger>
             <TabsTrigger
               value="rival"
-              className="flex items-center justify-center data-[state=active]:bg-yellow-500 data-[state=active]:text-white px-2 py-1 rounded-md"
+              className="flex items-center justify-center data-[state=active]:bg-yellow-500  px-2 py-1 rounded-md"
             >
               <Sword size={24} className="md:mr-2" />
               <span className="hidden md:inline">Torneos</span>
