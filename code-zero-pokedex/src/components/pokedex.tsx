@@ -358,7 +358,7 @@ export default function Pokedex() {
   <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)] z-50 relative">
     <DialogHeader>
       <DialogTitle>Login</DialogTitle>
-      <DialogDescription>Enter your Team ID to continue</DialogDescription>
+      <DialogDescription>Introduce tu ID de equipo</DialogDescription>
     </DialogHeader>
     <Input
       value={inputTeamId}
