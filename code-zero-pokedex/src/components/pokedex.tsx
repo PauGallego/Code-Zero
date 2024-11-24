@@ -14,6 +14,7 @@ import VoiceRecognitionModal from './voicerecon';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import EventTriggerComponent from './zone';
 import ThemeSwitch from './ThemeSwitch';
+import axios from 'axios'
 
 export default function Pokedex() {
   const teamUrl = 'https://hackeps-poke-backend.azurewebsites.net/teams/';
@@ -38,6 +39,7 @@ export default function Pokedex() {
 
   const [selectedPokemon, setSelectedPokemon] = useState<any | null>(null);
   const [isPokemonModalOpen, setIsPokemonModalOpen] = useState(false);
+  const [funFact, setFunFact] = useState('');
 
   const openPokemonModal = (pokemon: any) => {
     setSelectedPokemon(pokemon);
@@ -47,7 +49,52 @@ export default function Pokedex() {
   const closePokemonModal = () => {
     setSelectedPokemon(null);
     setIsPokemonModalOpen(false);
+    setFunFact(''); // Reset fun fact
   };
+
+  // Fetch fun fact from ChatGPT API when modal opens
+  useEffect(() => {
+    const fetchFunFact = async () => {
+      if (selectedPokemon) {
+        setFunFact('Cargando dato curioso...');
+        try {
+          const response = await axios.post(
+            'https://api.openai.com/v1/chat/completions',
+            {
+              model: 'gpt-4',
+              messages: [
+                {
+                  role: 'system',
+                  content:
+                    "Imagínate que eres una Pokédex. No sabes qué son videojuegos; tus datos están escritos por entrenadores Pokémon.",
+                },
+                {
+                  role: 'user',
+                  content: `Dame un dato curioso en pocas líneas del Pokémon ${selectedPokemon.name}. Si no encuentras ninguno, escribe el mensaje "No se ha encontrado ningún dato curioso de este Pokémon aún". No pongas un "(nombre del Pokémon):" al inicio de la frase.`,
+                },
+              ],
+              temperature: 0.7,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY_CHAT}`,
+              },
+            }
+          );
+          setFunFact(response.data.choices[0].message.content.trim());
+        } catch (error) {
+          console.error('Error fetching fun fact:', error);
+          setFunFact('No se ha encontrado ningún dato curioso de este Pokémon aún.');
+        }
+      }
+    };
+
+    if (isPokemonModalOpen) {
+      fetchFunFact();
+    }
+  }, [selectedPokemon, isPokemonModalOpen]);
+
 
   const specialImageUrl =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s';
@@ -250,7 +297,7 @@ export default function Pokedex() {
               <img
                 src={selectedPokemon.image}
                 alt={selectedPokemon.name}
-                className="w-full max-h-[200px]  object-contain mb-4"
+                className="w-full max-h-[200px] object-contain mb-4"
               />
               <p>
                 <strong>Type:</strong>{' '}
@@ -282,7 +329,7 @@ export default function Pokedex() {
                 <strong>Captured Count:</strong> {pokemonCounts[selectedPokemon.id] || 0}
               </p>
               <p>
-                <strong>Fun Fact:</strong> No hay fun fact
+                <strong>Fun Fact:</strong> {funFact}
               </p>
             </div>
           )}
