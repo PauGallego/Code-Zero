@@ -77,15 +77,17 @@ const ApiCycleComponentZones: React.FC = () => {
 
       {Object.keys(pokemonByLocation).length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Object.keys(pokemonByLocation).map((zoneId, index) => (
-            <Button
-              key={index}
-              onClick={() => handleOpenDialog(zoneId)}
-              className="w-full bg-blue-500 text-white rounded-lg p-4"
-            >
-              {zonesData[zoneId] || `Zone ${zoneId}`}
-            </Button>
-          ))}
+          {Object.entries(zonesData)
+            .sort((a, b) => a[1].localeCompare(b[1])) // Sort by zone name
+            .map(([zoneId, zoneName]) => (
+              <Button
+                key={zoneId}
+                onClick={() => handleOpenDialog(zoneId)}
+                className="w-full bg-blue-500 text-white rounded-lg p-4"
+              >
+                {zoneName || `Zone ${zoneId}`}
+              </Button>
+            ))}
         </div>
       ) : (
         <p>Loading Pokémon details...</p>
