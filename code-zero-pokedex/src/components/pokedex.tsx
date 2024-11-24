@@ -355,7 +355,7 @@ export default function Pokedex() {
       }}
     ></div>
   )}
-  <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)] z-50 relative">
+  <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)] z-50  mx-auto">
     <DialogHeader>
       <DialogTitle>Login</DialogTitle>
       <DialogDescription>Introduce tu ID de equipo</DialogDescription>
@@ -372,6 +372,7 @@ export default function Pokedex() {
       <Button
         onClick={() => {
           handleLogin(); // Tu función de login
+          setIsLoginModalOpen(false); // Cierra el modal al loguear
         }}
       >
         Login
