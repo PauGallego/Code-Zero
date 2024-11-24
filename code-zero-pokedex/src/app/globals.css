@@ -59,6 +59,12 @@
     --switch-icon-color: #f0f0f0;
   }
 
+  .dark body {
+    background: url("/bkg_dark.png") no-repeat center center fixed;
+    background-size: cover;
+  }
+
+ 
   /* Variables para modo oscuro */
   .dark {
     --background: #424242; /* Fondo gris oscuro */

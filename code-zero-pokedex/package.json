@@ -32,6 +32,7 @@
     "react-speech-recognition": "^3.10.0",
     "react-tsparticles": "^2.12.2",
     "recharts": "^2.13.3",
+    "recorder": "^0.0.1",
     "recorder-js": "^1.0.7",
     "regenerator-runtime": "^0.14.1",
     "tailwind-merge": "^2.5.4",
