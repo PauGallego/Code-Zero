@@ -5,7 +5,17 @@ import React, { useEffect, useState } from "react";
 const ApiCycleComponent: React.FC = () => {
   const teamUrl = "https://hackeps-poke-backend.azurewebsites.net/teams/";
   const pokemonUrl = "https://hackeps-poke-backend.azurewebsites.net/pokemons/";
-  const teamId = "63bf06cf-e720-4134-9252-f195668c6048";
+  const [teamId, setTeamId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Retrieve teamId from localStorage
+    const storedTeamId = localStorage.getItem("teamId");
+    if (storedTeamId) {
+      setTeamId(storedTeamId);
+    } else {
+      setError("Team ID not found. Please log in.");
+    }
+  }, []);
 
   const [teamData, setTeamData] = useState<any>(null);
   const [pokemonDetails, setPokemonDetails] = useState<any[]>([]);
