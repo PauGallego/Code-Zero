@@ -351,7 +351,7 @@ export default function Pokedex() {
     <div
       className="fixed inset-0 bg-cover bg-center z-40"
       style={{
-        backgroundImage: "url('/pokeball.jpg')", // Ruta de la imagen en 'public'
+        backgroundImage: "url('/pokeball.jpg')", // Ruta de la imagen en 'publico'
       }}
     ></div>
   )}
