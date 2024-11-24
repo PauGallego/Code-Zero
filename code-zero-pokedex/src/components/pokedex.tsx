@@ -43,18 +43,37 @@ export default function Pokedex() {
     if (storedTeamId) {
       setTeamId(storedTeamId);
     } else {
-      setIsLoginModalOpen(true); // Open login modal if no Team ID is stored
+      setIsLoginModalOpen(true); 
     }
   }, []);
 
-  const handleLogin = () => {
-    if (inputTeamId.trim()) {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+const handleLogin = async () => {
+  if (inputTeamId.trim()) {
+    try {
+      const response = await fetch(`https://hackeps-poke-backend.azurewebsites.net/teams/${inputTeamId.trim()}`);
+      if (!response.ok) {
+        throw new Error('Team not found');
+      }
+
+      const teamData = await response.json(); // Optional: usar si necesitas datos del equipo
+      console.log('Team data retrieved:', teamData);
+
       localStorage.setItem('teamId', inputTeamId.trim());
       setTeamId(inputTeamId.trim());
       setInputTeamId('');
       setIsLoginModalOpen(false);
+      setErrorMessage(null); // Clear any previous errors
+    } catch (error) {
+      console.error('Error fetching team:', error);
+      setErrorMessage('Team ID is invalid. Please try again.');
     }
-  };
+  } else {
+    setErrorMessage('Team ID cannot be empty.');
+  }
+};
+  
 
   const handleLogout = () => {
     localStorage.removeItem('teamId');
@@ -190,7 +209,7 @@ export default function Pokedex() {
 
 
     <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
- <Dialog open={isLoginModalOpen} onOpenChange={() => setIsLoginModalOpen(false)}>
+<Dialog open={isLoginModalOpen}>
   <DialogContent className="sm:max-w-[425px]">
     <DialogHeader>
       <DialogTitle>Login</DialogTitle>
@@ -201,11 +220,15 @@ export default function Pokedex() {
       onChange={(e) => setInputTeamId(e.target.value)}
       placeholder="Enter your Team ID"
     />
+    {errorMessage && (
+      <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+    )}
     <div className="flex justify-end mt-4">
       <Button onClick={handleLogin}>Login</Button>
     </div>
   </DialogContent>
 </Dialog>
+
 
       <AIAssistant isOpen={isAIAssistantOpen} onClose={() => setIsAIAssistantOpen(false)} />
       <CardContent className="p-6">
