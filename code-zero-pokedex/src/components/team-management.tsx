@@ -117,7 +117,6 @@ const ApiCycleComponentZones: React.FC = () => {
                   {zoneName || `Zone ${zoneId}`}
                 </Button>
               ))}
-            {/* Add 4 invisible divs to ensure proper rendering */}
             <div className="h-16 invisible"></div>
             <div className="h-16 invisible"></div>
             <div className="h-16 invisible"></div>
@@ -128,96 +127,116 @@ const ApiCycleComponentZones: React.FC = () => {
         <p>Loading Pokémon details...</p>
       )}
   
-  {selectedZone && (
-  <Dialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
-    <DialogContent className="sm:max-w-[600px]">
-      <DialogHeader>
-        <DialogTitle>{zonesData[selectedZone] || `Zone ${selectedZone}`}</DialogTitle>
-        <DialogDescription>
-          Pokémon found in this zone:
-        </DialogDescription>
-      </DialogHeader>
-      <div className="overflow-y-auto h-[400px] space-y-4">
-        <ul>
-          {pokemonByLocation[selectedZone]?.map((pokemon: any) => (
-            <li key={pokemon.id} className="flex items-center gap-4">
-              <img
-                src={pokemon.image}
-                alt={pokemon.name}
-                className="w-16 h-16 object-contain"
-              />
-              <div>
-                <p><strong>ID:</strong> {pokemon.id}</p>
-                <p><strong>Name:</strong> {pokemon.name}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-4 flex flex-col gap-4">
-        <Button
-          onClick={async () => {
-            try {
-              const response = await fetch(`https://hackeps-poke-backend.azurewebsites.net/events/${selectedZone}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ team_id: "63bf06cf-e720-4134-9252-f195668c6048" }),
-              });
-
-              if (response.status === 200) {
-                const data = await response.json();
-                setCaptureDialogState({ isOpen: true, message: "Pokémon captured successfully!", success: true });
-              } else {
-                setCaptureDialogState({ isOpen: true, message: "No Pokémon captured in this zone.", success: false });
-              }
-            } catch (err) {
-              setCaptureDialogState({ isOpen: true, message: "An error occurred while trying to capture in this zone.", success: false });
-              console.error(err);
-            }
-          }}
-          className="w-full bg-green-500 text-white rounded-lg"
-        >
-          Hunt in Zone
-        </Button>
-        <Button
-          onClick={handleCloseDialog}
-          className="w-full bg-red-500 text-white rounded-lg"
-        >
-          Close
-        </Button>
-      </div>
-    </DialogContent>
-  </Dialog>
-)}
-
-{/* Capture Result Dialog */}
-<Dialog open={captureDialogState.isOpen} onOpenChange={() => setCaptureDialogState({ ...captureDialogState, isOpen: false })}>
-  <DialogContent className="sm:max-w-[425px]">
-    <DialogHeader>
-      <DialogTitle>{captureDialogState.success ? "Success!" : "Failed!"}</DialogTitle>
-      <DialogDescription>
-        {captureDialogState.message}
-      </DialogDescription>
-    </DialogHeader>
-    <div className="flex justify-end mt-4">
-      <Button
-        onClick={() => {
-          setCaptureDialogState({ isOpen: false, message: "", success: false });
-          
-        }}
-        className="bg-blue-500 text-white hover:bg-blue-600"
+      {selectedZone && (
+        <Dialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>{zonesData[selectedZone] || `Zone ${selectedZone}`}</DialogTitle>
+              <DialogDescription>Pokémon found in this zone:</DialogDescription>
+            </DialogHeader>
+            <div className="overflow-y-auto h-[400px] space-y-4">
+              <ul>
+                {pokemonByLocation[selectedZone]?.map((pokemon: any) => (
+                  <li key={pokemon.id} className="flex items-center gap-4">
+                    <img
+                      src={pokemon.image}
+                      alt={pokemon.name}
+                      className="w-16 h-16 object-contain"
+                    />
+                    <div>
+                      <p><strong>ID:</strong> {pokemon.id}</p>
+                      <p><strong>Name:</strong> {pokemon.name}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-4 flex flex-col gap-4">
+              <Button
+                onClick={async () => {
+                  const teamId = localStorage.getItem("teamId");
+                  if (!teamId) {
+                    setCaptureDialogState({
+                      isOpen: true,
+                      message: "Team ID not found. Please log in.",
+                      success: false,
+                    });
+                    return;
+                  }
+  
+                  try {
+                    const response = await fetch(`${zoneUrl}${selectedZone}`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ team_id: teamId }),
+                    });
+  
+                    if (response.status === 200) {
+                      const data = await response.json();
+                      setCaptureDialogState({
+                        isOpen: true,
+                        message: "Pokémon captured successfully!",
+                        success: true,
+                      });
+                    } else {
+                      setCaptureDialogState({
+                        isOpen: true,
+                        message: "No Pokémon captured in this zone.",
+                        success: false,
+                      });
+                    }
+                  } catch (err) {
+                    setCaptureDialogState({
+                      isOpen: true,
+                      message: "An error occurred while trying to capture in this zone.",
+                      success: false,
+                    });
+                    console.error(err);
+                  }
+                }}
+                className="w-full bg-green-500 text-white rounded-lg"
+              >
+                Hunt in Zone
+              </Button>
+              <Button
+                onClick={handleCloseDialog}
+                className="w-full bg-red-500 text-white rounded-lg"
+              >
+                Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+  
+      <Dialog
+        open={captureDialogState.isOpen}
+        onOpenChange={() =>
+          setCaptureDialogState({ ...captureDialogState, isOpen: false })
+        }
       >
-        {captureDialogState.success ? "Reload" : "Close"}
-      </Button>
-    </div>
-  </DialogContent>
-</Dialog>
-
-
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {captureDialogState.success ? "Success!" : "Failed!"}
+            </DialogTitle>
+            <DialogDescription>{captureDialogState.message}</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end mt-4">
+            <Button
+              onClick={() =>
+                setCaptureDialogState({ isOpen: false, message: "", success: false })
+              }
+              className="bg-blue-500 text-white hover:bg-blue-600"
+            >
+              {captureDialogState.success ? "Reload" : "Close"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
+    
   
 };
 
