@@ -12,6 +12,7 @@ import TeamManagement from './team-management';
 import AIAssistant from './ai-assistant';
 import VoiceRecognitionModal from './voicerecon';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import EventTriggerComponent from './zone';
 
 export default function Pokedex() {
   const teamUrl = 'https://hackeps-poke-backend.azurewebsites.net/teams/';
@@ -339,24 +340,25 @@ export default function Pokedex() {
             </Button>
 
             <Dialog open={isZoneModalOpen} onOpenChange={setIsZoneModalOpen}>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Zona QR</DialogTitle>
-                  <DialogDescription>
-                    Aquí puedes escanear un código QR o realizar alguna acción específica.
-                  </DialogDescription>
-                </DialogHeader>
-                {/* Contenido adicional del modal aquí */}
-                <div className="flex justify-end mt-4">
-                  <Button
-                    onClick={() => setIsZoneModalOpen(false)}
-                    className="bg-red-500 text-white hover:bg-red-600"
-                  >
-                    Cerrar
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Zona QR</DialogTitle>
+                <DialogDescription>
+                  Aquí puedes escanear un código QR o realizar alguna acción específica.
+                </DialogDescription>
+              </DialogHeader>
+              <EventTriggerComponent /> {/* Incluimos el componente del escáner QR */}
+              <div className="flex justify-end mt-4">
+                <Button
+                  onClick={() => setIsZoneModalOpen(false)}
+                  className="bg-red-500 text-white hover:bg-red-600"
+                >
+                  Cerrar
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
 
             <Button
               variant="outline"

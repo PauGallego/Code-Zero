@@ -5,16 +5,15 @@ import { BrowserMultiFormatReader } from "@zxing/browser";
 
 const EventTriggerComponent: React.FC = () => {
   const baseUrl = "https://hackeps-poke-backend.azurewebsites.net/events/";
-  const teamId = "63bf06cf-e720-4134-9252-f195668c6048"; // Team ID fijo
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [zoneId, setZoneId] = useState<string>("");
+  const [manualZoneId, setManualZoneId] = useState<string>(""); // For manual entry
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
 
   useEffect(() => {
-    // Inicia el escáner una vez que el videoRef esté disponible
     if (isScanning && videoRef.current) {
       startScanner();
     }
@@ -22,48 +21,41 @@ const EventTriggerComponent: React.FC = () => {
 
   const startScanner = async () => {
     setError(null);
-  
+
     const codeReader = new BrowserMultiFormatReader();
     try {
       if (!videoRef.current) {
         setError("Video element not found. Unable to start scanner.");
         return;
       }
-  
+
       console.log("Initializing scanner...");
-      const resultStream = await codeReader.decodeFromVideoDevice(
-        undefined, // Selecciona la cámara predeterminada
+      await codeReader.decodeFromVideoDevice(
+        undefined, // Default camera
         videoRef.current,
         (result, error) => {
           if (result) {
             const text = result.getText();
             console.log("QR Scan Result (raw):", text);
-  
-            // Extraer el último segmento de la URL como Zone ID
-            const extractedZoneId = text.split('/').pop(); // Obtiene el último segmento
+
+            const extractedZoneId = text.split("/").pop(); // Extract last segment
             if (extractedZoneId && extractedZoneId.length > 0) {
               console.log("Extracted Zone ID:", extractedZoneId);
               setZoneId(extractedZoneId);
-  
-              // Detener el escáner solo si el Zone ID es válido
+
               stopScanner();
-              setIsScanning(false);
             } else {
               console.warn("QR code does not contain a valid Zone ID. Keep scanning...");
               setError("Invalid QR code format. Could not extract a Zone ID.");
-              setZoneId(""); // Reset Zone ID
+              setZoneId("");
             }
           }
-  
+
           if (error) {
             console.warn("No QR code detected. Keep scanning...");
-            // No detener el escáner si hay errores menores
           }
         }
       );
-  
-      // Ya no es necesario almacenar el MediaStream en el estado
-      // setStream(resultStream); // Este paso se ha eliminado
     } catch (err: any) {
       console.error("Error initializing scanner:", err);
       setError(err.message || "An error occurred while accessing the camera.");
@@ -73,36 +65,32 @@ const EventTriggerComponent: React.FC = () => {
 
   const stopScanner = () => {
     if (videoRef.current) {
-      // Detener todos los tracks de video asociados al videoRef (MediaStream)
       const stream = videoRef.current.srcObject as MediaStream;
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
-        videoRef.current.srcObject = null; // Limpiar la fuente del video
+        videoRef.current.srcObject = null;
         console.log("Scanner stopped.");
       }
     }
+    setIsScanning(false);
   };
 
-  const triggerEvent = async () => {
-    console.log("Function Trigger Event called");
-
-    if (!zoneId) {
-      console.error("Zone ID is required, but not provided");
+  const triggerEvent = async (inputZoneId: string) => {
+    if (!inputZoneId) {
       setError("Zone ID is required.");
       return;
     }
 
-    console.log("Zone ID provided:", zoneId);
-    console.log("Base URL:", baseUrl);
-    console.log("Team ID:", teamId);
+    const teamId = localStorage.getItem("teamId");
+    if (!teamId) {
+      setError("Team ID not found. Please log in.");
+      return;
+    }
 
-    const url = `${baseUrl}${zoneId}`;
+    const url = `${baseUrl}${inputZoneId}`;
     const body = {
       team_id: teamId,
     };
-
-    console.log("Constructed URL:", url);
-    console.log("Request Body:", body);
 
     try {
       const response = await fetch(url, {
@@ -113,18 +101,21 @@ const EventTriggerComponent: React.FC = () => {
         body: JSON.stringify(body),
       });
 
-      console.log("HTTP Response Status:", response.status);
-
       if (response.status === 200) {
         const data = await response.json();
         console.log("Pokémon captured:", data);
-        setResponseMessage("Event triggered successfully! Pokémon captured!");
+
+        const storedZones = JSON.parse(localStorage.getItem("zones") || "[]");
+        if (!storedZones.includes(inputZoneId)) {
+          storedZones.push(inputZoneId);
+          localStorage.setItem("zones", JSON.stringify(storedZones));
+        }
+
+        setResponseMessage("Zona capturada exitosamente y guardada.");
       } else if (response.status === 400) {
-        console.warn("No Pokémon captured");
-        setResponseMessage("No Pokémon captured in this zone.");
+        setResponseMessage("No se capturó ningún Pokémon en esta zona.");
       } else {
-        console.error("Capture error with status:", response.status);
-        setResponseMessage(`Capture error! Status: ${response.status}`);
+        setResponseMessage(`Error al capturar zona. Status: ${response.status}`);
       }
     } catch (err: any) {
       console.error("Error occurred during POST request:", err);
@@ -134,86 +125,117 @@ const EventTriggerComponent: React.FC = () => {
 
   return (
     <div style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "10px" }}>
-      <h1>Trigger Event</h1>
-      <div style={{ marginBottom: "20px" }}>
-        {isScanning ? (
-          <>
-            <video
-              ref={videoRef}
-              style={{
-                width: "100%",
-                maxWidth: "500px",
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-              }}
-              autoPlay
-              muted
-            />
-            <button
-              onClick={stopScanner}
-              style={{
-                padding: "10px 20px",
-                fontSize: "16px",
-                cursor: "pointer",
-                border: "none",
-                borderRadius: "5px",
-                backgroundColor: "#dc3545",
-                color: "#fff",
-                marginTop: "10px",
-              }}
-            >
-              Stop Camera
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => {
-              setIsScanning(true);
-              setError(null);
-              setResponseMessage(null);
+      {!zoneId && isScanning && (
+        <div style={{ marginBottom: "20px" }}>
+          <video
+            ref={videoRef}
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              border: "1px solid #ddd",
+              borderRadius: "10px",
             }}
+            autoPlay
+            muted
+          />
+          <button
+            onClick={stopScanner}
             style={{
               padding: "10px 20px",
               fontSize: "16px",
               cursor: "pointer",
               border: "none",
               borderRadius: "5px",
-              backgroundColor: "#007bff",
+              backgroundColor: "#dc3545",
               color: "#fff",
+              marginTop: "10px",
             }}
           >
-            Open Camera
+            Stop Camera
           </button>
-        )}
+        </div>
+      )}
+      {!zoneId && !isScanning && (
+        <button
+          onClick={() => {
+            setIsScanning(true);
+            setError(null);
+            setResponseMessage(null);
+          }}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: "pointer",
+            border: "none",
+            borderRadius: "5px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            marginBottom: "20px",
+          }}
+        >
+          Open Camera
+        </button>
+      )}
+      <div style={{ marginBottom: "20px" }}>
+        <input
+          type="text"
+          placeholder="Enter Zone ID manually"
+          value={manualZoneId}
+          onChange={(e) => setManualZoneId(e.target.value)}
+          style={{
+            padding: "10px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            width: "100%",
+          }}
+        />
+        <button
+          onClick={() => triggerEvent(manualZoneId)}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: "pointer",
+            border: "none",
+            borderRadius: "5px",
+            backgroundColor: "#28a745",
+            color: "#fff",
+            marginTop: "10px",
+            width: "100%",
+          }}
+        >
+          Add Zone Manually
+        </button>
       </div>
       {zoneId && (
-        <p>
-          <strong>Zone ID:</strong> {zoneId}
-        </p>
+        <>
+          <p>
+            <strong>Zone ID:</strong> {zoneId}
+          </p>
+          <button
+            onClick={() => triggerEvent(zoneId)}
+            style={{
+              padding: "10px 20px",
+              fontSize: "16px",
+              cursor: "pointer",
+              border: "none",
+              borderRadius: "5px",
+              backgroundColor: "#28a745",
+              color: "#fff",
+              marginTop: "10px",
+            }}
+          >
+            Capturar y añadir zona QR
+          </button>
+        </>
       )}
-      <button
-        onClick={triggerEvent}
-        style={{
-          padding: "10px 20px",
-          fontSize: "16px",
-          cursor: "pointer",
-          border: "none",
-          borderRadius: "5px",
-          backgroundColor: "#28a745",
-          color: "#fff",
-          marginTop: "10px",
-        }}
-        disabled={!zoneId}
-      >
-        Trigger Event
-      </button>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
       {responseMessage && (
         <p
           style={{
-            color: responseMessage.includes("Pokémon captured")
+            color: responseMessage.includes("exitosamente")
               ? "green"
-              : responseMessage.includes("No Pokémon")
+              : responseMessage.includes("No se capturó")
               ? "orange"
               : "red",
           }}
