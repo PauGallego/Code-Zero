@@ -80,7 +80,7 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
           transition={{ duration: 0.3 }}
           className="fixed inset-0 z-50 flex items-center justify-center"
         >
-          <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+          <div className="bg-[var(--cards-background)] border border-6 rounded-lg shadow-lg p-6 w-96">
             <h2 className="text-xl font-bold mb-4">Voice Recognition</h2>
             <p className="mb-4">
               Click the button below and start speaking to recognize your voice.

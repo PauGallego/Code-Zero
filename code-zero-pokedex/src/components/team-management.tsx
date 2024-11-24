@@ -124,7 +124,7 @@ const ApiCycleComponentZones: React.FC = () => {
   
       {selectedZone && (
         <Dialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] bg-[var(--cards-background-modal)]">
             <DialogHeader>
               <DialogTitle>{zonesData[selectedZone] || `Zone ${selectedZone}`}</DialogTitle>
               <DialogDescription>
