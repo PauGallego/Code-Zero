@@ -43,37 +43,37 @@ export default function Pokedex() {
     if (storedTeamId) {
       setTeamId(storedTeamId);
     } else {
-      setIsLoginModalOpen(true); 
+      setIsLoginModalOpen(true);
     }
   }, []);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-const handleLogin = async () => {
-  if (inputTeamId.trim()) {
-    try {
-      const response = await fetch(`https://hackeps-poke-backend.azurewebsites.net/teams/${inputTeamId.trim()}`);
-      if (!response.ok) {
-        throw new Error('Team not found');
+  const handleLogin = async () => {
+    if (inputTeamId.trim()) {
+      try {
+        const response = await fetch(`https://hackeps-poke-backend.azurewebsites.net/teams/${inputTeamId.trim()}`);
+        if (!response.ok) {
+          throw new Error('Team not found');
+        }
+
+        const teamData = await response.json(); // Optional: usar si necesitas datos del equipo
+        console.log('Team data retrieved:', teamData);
+
+        localStorage.setItem('teamId', inputTeamId.trim());
+        setTeamId(inputTeamId.trim());
+        setInputTeamId('');
+        setIsLoginModalOpen(false);
+        setErrorMessage(null); // Clear any previous errors
+      } catch (error) {
+        console.error('Error fetching team:', error);
+        setErrorMessage('Team ID is invalid. Please try again.');
       }
-
-      const teamData = await response.json(); // Optional: usar si necesitas datos del equipo
-      console.log('Team data retrieved:', teamData);
-
-      localStorage.setItem('teamId', inputTeamId.trim());
-      setTeamId(inputTeamId.trim());
-      setInputTeamId('');
-      setIsLoginModalOpen(false);
-      setErrorMessage(null); // Clear any previous errors
-    } catch (error) {
-      console.error('Error fetching team:', error);
-      setErrorMessage('Team ID is invalid. Please try again.');
+    } else {
+      setErrorMessage('Team ID cannot be empty.');
     }
-  } else {
-    setErrorMessage('Team ID cannot be empty.');
-  }
-};
-  
+  };
+
 
   const handleLogout = () => {
     localStorage.removeItem('teamId');
@@ -204,30 +204,30 @@ const handleLogin = async () => {
 
   return (
 
-    
+
 
 
 
     <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
-<Dialog open={isLoginModalOpen}>
-  <DialogContent className="sm:max-w-[425px]">
-    <DialogHeader>
-      <DialogTitle>Login</DialogTitle>
-      <DialogDescription>Enter your Team ID to continue.</DialogDescription>
-    </DialogHeader>
-    <Input
-      value={inputTeamId}
-      onChange={(e) => setInputTeamId(e.target.value)}
-      placeholder="Enter your Team ID"
-    />
-    {errorMessage && (
-      <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
-    )}
-    <div className="flex justify-end mt-4">
-      <Button onClick={handleLogin}>Login</Button>
-    </div>
-  </DialogContent>
-</Dialog>
+      <Dialog open={isLoginModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Login</DialogTitle>
+            <DialogDescription>Enter your Team ID to continue.</DialogDescription>
+          </DialogHeader>
+          <Input
+            value={inputTeamId}
+            onChange={(e) => setInputTeamId(e.target.value)}
+            placeholder="Enter your Team ID"
+          />
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+          )}
+          <div className="flex justify-end mt-4">
+            <Button onClick={handleLogin}>Login</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
 
       <AIAssistant isOpen={isAIAssistantOpen} onClose={() => setIsAIAssistantOpen(false)} />
@@ -258,7 +258,7 @@ const handleLogin = async () => {
             >
               <Bot size={24} className="text-red-500" />
             </Button>
-          
+
             <Button
               variant="outline"
               size="icon"
@@ -269,7 +269,7 @@ const handleLogin = async () => {
             </Button>
           </div>
         </div>
-  
+
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
           <TabsList className="flex md:grid md:grid-cols-4 justify-between items-center w-full mb-4 bg-[#d7d7d7] h-[40px] md:h-[55px] p-2">
             <TabsTrigger
@@ -301,7 +301,7 @@ const handleLogin = async () => {
               <span className="hidden md:inline">Torneos</span>
             </TabsTrigger>
           </TabsList>
-  
+
           {['list', 'grid'].includes(activeTab) && (
             <div className="mb-6">
               <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
@@ -329,32 +329,32 @@ const handleLogin = async () => {
                   </select>
                 </div>
               </div>
-              <div className="flex justify-center align-centerflex justify-center items-center gap-4">
+              <div className="flex justify-center align-centerflex  items-center gap-4">
                 <Button
                   variant="outline"
-                  
+
                   onClick={evolveAll}
                   className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500 w-[100%] h-[80%] "
                 >
                   Evolve All
                 </Button>
                 <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsModalOpen(true)}
-              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90 "
-            >
-              <Mic size={24} className="text-red-500" />
-            </Button>
-            <VoiceRecognitionModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onRecognize={handleRecognize}
-            />
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setIsModalOpen(true)}
+                  className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90 "
+                >
+                  <Mic size={24} className="text-red-500" />
+                </Button>
+                <VoiceRecognitionModal
+                  isOpen={isModalOpen}
+                  onClose={() => setIsModalOpen(false)}
+                  onRecognize={handleRecognize}
+                />
               </div>
             </div>
           )}
-  
+
           <TabsContent value="list">
             {activeTab === 'list' && (
               <div className="overflow-y-auto h-[60vh]">
@@ -396,7 +396,7 @@ const handleLogin = async () => {
               </div>
             )}
           </TabsContent>
-  
+
           <TabsContent value="grid">
             {activeTab === 'grid' && (
               <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[58vh]">
@@ -430,7 +430,7 @@ const handleLogin = async () => {
               </div>
             )}
           </TabsContent>
-  
+
           <TabsContent value="team">
             {activeTab === 'team' && <TeamManagement />}
           </TabsContent>
@@ -441,5 +441,5 @@ const handleLogin = async () => {
       </CardContent>
     </Card>
   );
-  
+
 }
