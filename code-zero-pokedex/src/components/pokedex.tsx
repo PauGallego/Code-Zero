@@ -303,19 +303,19 @@ export default function Pokedex() {
                 className="w-full max-h-[200px] object-contain mb-4 border border-[var(--borde-items)]"
               />
               <p>
-                <strong>Type:</strong>{' '}
+                <strong>Tipo:</strong>{' '}
                 {selectedPokemon.types
                   ?.map((type: { type: { name: string } }) => type.type.name)
                   .join(', ') || 'Unknown'}
               </p>
               <p>
-                <strong>Height:</strong> {selectedPokemon.height || 'Unknown'}
+                <strong>Altura:</strong> {selectedPokemon.height || 'Unknown'}
               </p>
               <p>
-                <strong>Weight:</strong> {selectedPokemon.weight || 'Unknown'}
+                <strong>Peso:</strong> {selectedPokemon.weight || 'Unknown'}
               </p>
               <p>
-                <strong>Abilities:</strong>{' '}
+                <strong>Habilidades:</strong>{' '}
                 {selectedPokemon.abilities
                   ?.map((ability: { ability: { name: string } }) => ability.ability.name)
                   .join(', ') || 'Unknown'}
@@ -329,7 +329,7 @@ export default function Pokedex() {
                 </p>
               )}
               <p>
-                <strong>Captured Count:</strong> {pokemonCounts[selectedPokemon.id] || 0}
+                <strong>Cantidad capturados:</strong> {pokemonCounts[selectedPokemon.id] || 0}
               </p>
               <p>
                 <strong>Fun Fact:</strong> {funFact}
@@ -404,7 +404,7 @@ export default function Pokedex() {
                 <div className="flex justify-end mt-4">
                   <Button
                     onClick={() => setIsZoneModalOpen2(false)}
-                    className="bg-red-500 text-white hover:bg-red-600"
+                    className="bg-red-500  hover:bg-red-600"
                   >
                     Cerrar
                   </Button>
@@ -433,7 +433,7 @@ export default function Pokedex() {
                 <div className="flex justify-end mt-4">
                   <Button
                     onClick={() => setIsZoneModalOpen(false)}
-                    className="bg-red-500 text-white hover:bg-red-600"
+                    className="bg-red-500  hover:bg-red-600"
                   >
                     Cerrar
                   </Button>
@@ -513,11 +513,11 @@ export default function Pokedex() {
                     onChange={(e) => setSortOrder(e.target.value)}
                     className="border border-[var(--borde-items)]  rounded-lg px-4 py-2 bg-[var(--cards-background)] w-full md:w-auto"
                   >
-                    <option value="name">Sort by Name</option>
-                    <option value="id">Sort by ID</option>
-                    <option value="count">Sort by Duplicates</option>
-                    <option value="type">Sort by Type</option>
-                    <option value="evolves">Sort by Evolvable</option>
+                    <option value="name">Filtrar por nombre</option>
+                    <option value="id">Filtrar por ID</option>
+                    <option value="count">Filtrar por duplicados</option>
+                    <option value="type">Filtrar por tipo</option>
+                    <option value="evolves">Filtrar por evolucionables</option>
                   </select>
                 </div>
               </div>
@@ -526,9 +526,9 @@ export default function Pokedex() {
                   variant="outline"
 
                   onClick={evolveAll}
-                  className="rounded-lg border-2 border-green-500 hover:bg-green-300 hover:text-black bg-[var(--cards-background)] text-green-500 w-[100%] h-[80%] "
+                  className="rounded-lg p-1 text-lg border-2 border-green-500 hover:bg-green-300 hover:text-black bg-[var(--cards-background)] text-green-500 w-[100%] h-[80%] "
                 >
-                  Evolve All
+                  Evolucionar todos
                 </Button>
                 <Button
                   variant="outline"
