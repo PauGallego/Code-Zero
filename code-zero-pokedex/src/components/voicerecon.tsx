@@ -36,9 +36,9 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
       setMicPermissionDenied(false);
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Microphone permissions denied:", error.message);
+        console.error("Permisos de micrófono denegados:", error.message);
       } else {
-        console.error("Unknown error while accessing microphone:", error);
+        console.error("Error desconocido al acceder al micrófono:", error);
       }
       setMicPermissionDenied(true);
     }
@@ -53,7 +53,7 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
   // Inicia la grabación de audio
   const startRecording = async () => {
     if (!recorder) {
-      console.error("Recorder is not initialized.");
+      console.error("El grabador no está inicializado.");
       return;
     }
 
@@ -62,9 +62,9 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
       setIsRecording(true);
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Error starting recording:", error.message);
+        console.error("Error al iniciar la grabación:", error.message);
       } else {
-        console.error("Unknown error starting recording:", error);
+        console.error("Error desconocido al iniciar la grabación:", error);
       }
     }
   };
@@ -72,20 +72,20 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
   // Detiene la grabación y procesa el audio
   const stopRecording = async () => {
     if (!recorder) {
-      console.error("Recorder is not initialized.");
+      console.error("El grabador no está inicializado.");
       return;
     }
 
     try {
       const { blob } = await recorder.stop();
       setAudioBlob(blob);
-      console.log("Recorded audio blob:", blob);
+      console.log("Audio grabado:", blob);
       processAudio(blob);
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Error stopping recording:", error.message);
+        console.error("Error al detener la grabación:", error.message);
       } else {
-        console.error("Unknown error stopping recording:", error);
+        console.error("Error desconocido al detener la grabación:", error);
       }
     } finally {
       setIsRecording(false);
@@ -95,7 +95,7 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
   // Procesa el audio grabado y lo envía a Whisper para transcripción
   const processAudio = async (blob: Blob) => {
     if (!blob) {
-      console.error("No audio blob available.");
+      console.error("No hay audio disponible para procesar.");
       return;
     }
 
@@ -119,23 +119,23 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
       );
 
       let transcript = response.data.text;
-      console.log("Whisper response before cleaning:", transcript);
+      console.log("Respuesta de Whisper antes de limpiar:", transcript);
 
       // Limpiar caracteres no deseados
       transcript = transcript.replace(/[¿?!¡]/g, "");
-      console.log("Whisper response after cleaning:", transcript);
+      console.log("Respuesta de Whisper después de limpiar:", transcript);
 
       setTranscription(transcript);
       onRecognize(transcript); // Enviar el texto limpio al componente padre
       onClose(); // Cerrar el modal después de procesar
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error("Error during transcription:", error.response?.data || error.message);
+        console.error("Error durante la transcripción:", error.response?.data || error.message);
         setTranscription(
-          `Error al transcribir el audio. Detalles: ${error.response?.data?.error?.message || "Unknown error"}`
+          `Error al transcribir el audio. Detalles: ${error.response?.data?.error?.message || "Error desconocido"}`
         );
       } else {
-        console.error("Unknown error during transcription:", error);
+        console.error("Error desconocido durante la transcripción:", error);
         setTranscription("Error desconocido al procesar el audio.");
       }
     } finally {
@@ -154,32 +154,29 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
           className="fixed inset-0 z-50 flex items-center justify-center"
         >
           <div className="bg-[var(--cards-background)] border border-6 rounded-lg shadow-lg p-6 w-96">
-            <h2 className="text-xl font-bold mb-4">Voice Recognition</h2>
-            <p className="mb-4">
-              Hold the button below to record and release to transcribe your voice.
-            </p>
+            <h2 className="text-xl font-bold mb-4">Reconocimiento de Voz</h2>
+            <p className="mb-4">Haz clic en el botón para iniciar o detener la grabación.</p>
             <div className="flex flex-col items-center">
               <Button
-                onMouseDown={startRecording}
-                onMouseUp={stopRecording}
+                onClick={isRecording ? stopRecording : startRecording}
                 className={`rounded-lg px-4 py-2 ${
                   isRecording ? "bg-red-500 text-white" : "bg-blue-500 text-white"
                 }`}
                 disabled={isProcessing}
               >
-                {isRecording ? "Recording..." : "Hold to Record"}
+                {isRecording ? "Detener Grabación" : "Iniciar Grabación"}
               </Button>
               {micPermissionDenied && (
                 <p className="text-red-500 mt-4">
-                  Microphone permissions are required to use this feature.
+                  Se requieren permisos de micrófono para usar esta función.
                 </p>
               )}
               {isProcessing && (
-                <p className="text-gray-500 mt-4">Processing audio...</p>
+                <p className="text-gray-500 mt-4">Procesando el audio...</p>
               )}
               {transcription && (
                 <p className="mt-4 text-gray-700 text-center">
-                  Transcribed Text: <strong>{transcription}</strong>
+                  Texto Transcrito: <strong>{transcription}</strong>
                 </p>
               )}
               <Button
@@ -191,7 +188,7 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
                   onClose();
                 }}
               >
-                Close
+                Cerrar
               </Button>
             </div>
           </div>
