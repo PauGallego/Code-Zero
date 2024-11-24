@@ -297,7 +297,7 @@ export default function Pokedex() {
               <img
                 src={selectedPokemon.image}
                 alt={selectedPokemon.name}
-                className="w-full max-h-[200px] object-contain mb-4"
+                className="w-full max-h-[200px] object-contain mb-4 border border-[var(--borde-items)]"
               />
               <p>
                 <strong>Type:</strong>{' '}
@@ -525,7 +525,7 @@ export default function Pokedex() {
                     onClick={() => openPokemonModal(pokemon)}
                     className="p-4 bg-[var(--cards-background)] rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray cursor-pointer"
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center ">
                       {pokemon.image && (
                         <img
                           src={pokemon.image}
@@ -552,7 +552,7 @@ export default function Pokedex() {
                   <div
                     key={pokemon.id}
                     onClick={() => openPokemonModal(pokemon)}
-                    className="p-4 bg-[var(--cards-background)] rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow cursor-pointer"
+                    className="p-4 bg-[var(--cards-background)] rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow hover:border-2 hover:border-gray cursor-pointer"
                   >
                     {pokemon.image && (
                       <img
