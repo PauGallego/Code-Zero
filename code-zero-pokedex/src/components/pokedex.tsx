@@ -299,7 +299,7 @@ export default function Pokedex() {
 
 
       <Dialog open={isLoginModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)]">
           <DialogHeader>
             <DialogTitle>Login</DialogTitle>
             <DialogDescription>Enter your Team ID to continue.</DialogDescription>
@@ -337,7 +337,7 @@ export default function Pokedex() {
               variant="outline"
               size="icon"
               onClick={() => setIsZoneModalOpen(true)}
-              className="rounded-lg border-2 border-borderButtons microfono hover:bg-yellow-100 bg-white/90"
+              className="rounded-lg border border-[var(--borde-items)] bg-[var(--cards-background-modal)] microfono hover:bg-yellow-100"
             >
               <QrCode size={24} className="text-red-500" />
             </Button>
@@ -367,7 +367,7 @@ export default function Pokedex() {
               variant="outline"
               size="icon"
               onClick={() => setIsAIAssistantOpen(true)}
-              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90"
+              className="rounded-lg  border border-[var(--borde-items)] hover:bg-yellow-100 bg-[var(--cards-background-modal)]"
             >
               <Bot size={24} className="text-red-500" />
             </Button>
@@ -376,7 +376,7 @@ export default function Pokedex() {
               variant="outline"
               size="icon"
               onClick={handleLogout}
-              className="rounded-lg border-2 border-red-500 hover:bg-red-100 bg-white/90"
+              className="rounded-lg border-2 border-red-500 hover:bg-red-100 bg-[var(--cards-background-modal)]"
             >
               <LogOut size={24} className="text-red-500" />
             </Button>
@@ -384,7 +384,7 @@ export default function Pokedex() {
         </div>
 
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="flex md:grid md:grid-cols-4 justify-between items-center w-full mb-4 bg-[var(--cards-background)] h-[40px] md:h-[55px] p-2">
+          <TabsList className="flex md:grid md:grid-cols-4 border border-[var(--borde-items)] justify-between items-center w-full mb-4 bg-[var(--cards-background)] h-[40px] md:h-[55px] p-2">
             <TabsTrigger
               value="list"
               className="flex items-center justify-center data-[state=active]:bg-red-500 data-[state=active]:text-white px-2 py-1 rounded-md"
@@ -432,7 +432,7 @@ export default function Pokedex() {
                   <select
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
-                    className="border-[var(--borde-items)]  rounded-lg px-4 py-2 bg-[var(--cards-background)] w-full md:w-auto"
+                    className="border border-[var(--borde-items)]  rounded-lg px-4 py-2 bg-[var(--cards-background)] w-full md:w-auto"
                   >
                     <option value="name">Sort by Name</option>
                     <option value="id">Sort by ID</option>
