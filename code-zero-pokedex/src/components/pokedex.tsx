@@ -346,27 +346,42 @@ export default function Pokedex() {
           </div>
         </DialogContent>
       </Dialog>
-
-
       <Dialog open={isLoginModalOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)]">
-          <DialogHeader>
-            <DialogTitle>Login</DialogTitle>
-            <DialogDescription>Enter your Team ID to continue.</DialogDescription>
-          </DialogHeader>
-          <Input
-            value={inputTeamId}
-            onChange={(e) => setInputTeamId(e.target.value)}
-            placeholder="Enter your Team ID"
-          />
-          {errorMessage && (
-            <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
-          )}
-          <div className="flex justify-end mt-4">
-            <Button onClick={handleLogin}>Login</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+  {isLoginModalOpen && (
+    <div
+      className="fixed inset-0 bg-cover bg-center z-40"
+      style={{
+        backgroundImage: "url('/pokeball.jpg')", // Ruta de la imagen en 'public'
+      }}
+    ></div>
+  )}
+  <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)] z-50 relative">
+    <DialogHeader>
+      <DialogTitle>Login</DialogTitle>
+      <DialogDescription>Enter your Team ID to continue</DialogDescription>
+    </DialogHeader>
+    <Input
+      value={inputTeamId}
+      onChange={(e) => setInputTeamId(e.target.value)}
+      placeholder="Enter your Team ID"
+    />
+    {errorMessage && (
+      <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+    )}
+    <div className="flex justify-end mt-4">
+      <Button
+        onClick={() => {
+          handleLogin(); // Tu función de login
+        }}
+      >
+        Login
+      </Button>
+    </div>
+  </DialogContent>
+</Dialog>
+
+
+
 
 
       <AIAssistant isOpen={isAIAssistantOpen} onClose={() => setIsAIAssistantOpen(false)} />
