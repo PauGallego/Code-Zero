@@ -144,9 +144,12 @@ export default function Pokedex() {
   };
 
   const handleRecognize = (text: string) => {
-    setRecognizedText(text);
-    console.log('Recognized Text:', text);
+    setRecognizedText(text); // Actualiza el estado con el texto reconocido
+    setSearchQuery(text); // Establece el texto reconocido como el valor de búsqueda
+    setIsModalOpen(false); // Cierra el modal de voz
+    console.log('Recognized Text:', text); // Muestra el texto reconocido en la consola
   };
+  
 
   const fetchTeamData = async () => {
     if (!teamId) return; // Prevent fetch if teamId is null
@@ -468,7 +471,7 @@ export default function Pokedex() {
                 <div className="relative flex-1 w-full">
                   <Input
                     type="text"
-                    placeholder="Search Pokémon..."
+                    placeholder={recognizedText}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-10 pr-10 bg-[var(--cards-background)]"
