@@ -3,8 +3,9 @@
 import 'regenerator-runtime/runtime'; // Polyfill para funciones asincrónicas
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useEffect, useState } from 'react';
+import Recorder from 'recorder-js';
+import axios from 'axios';
 
 type VoiceRecognitionModalProps = {
   isOpen: boolean;
@@ -17,58 +18,110 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
   onClose,
   onRecognize,
 }) => {
-  const { transcript, listening, resetTranscript } = useSpeechRecognition();
-  const [unsupported, setUnsupported] = useState(false); // Para manejar compatibilidad
-  const [micPermissionDenied, setMicPermissionDenied] = useState(false); // Permiso de micrófono
+  const [recorder, setRecorder] = useState<Recorder | null>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [transcription, setTranscription] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [micPermissionDenied, setMicPermissionDenied] = useState(false);
 
-  // Solicitar permisos de micrófono
-  const requestMicPermissions = async () => {
+  // Solicitar permisos de micrófono y configurar Recorder.js
+  const setupRecorder = async () => {
     try {
-      console.log('Requesting microphone permissions...');
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      console.log('Microphone permissions granted.');
-      return true;
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const newRecorder = new Recorder(audioContext);
+      newRecorder.init(stream);
+      setRecorder(newRecorder);
+      setMicPermissionDenied(false);
     } catch (error) {
       console.error('Microphone permissions denied:', error);
       setMicPermissionDenied(true);
-      return false;
     }
-  };
-
-  // Inicia el reconocimiento de voz
-  const startListening = async () => {
-    console.log('Attempting to start listening...');
-    if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
-      console.log('Speech recognition is not supported in this browser.');
-      setUnsupported(true);
-      return;
-    }
-
-    const hasPermissions = await requestMicPermissions();
-    if (!hasPermissions) {
-      console.log('Cannot start listening without microphone permissions.');
-      return;
-    }
-
-    setUnsupported(false);
-    setMicPermissionDenied(false);
-    SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
-    console.log('Started listening...');
-  };
-
-  // Detiene el reconocimiento de voz
-  const stopListening = () => {
-    console.log('Stopping listening...');
-    SpeechRecognition.stopListening();
-    console.log('Stopped listening.');
-    onRecognize(transcript);
   };
 
   useEffect(() => {
-    if (listening) {
-      console.log(`Listening... Transcript so far: ${transcript}`);
+    if (isOpen) {
+      setupRecorder();
     }
-  }, [transcript, listening]);
+  }, [isOpen]);
+
+  // Inicia la grabación de audio
+  const startRecording = async () => {
+    if (!recorder) {
+      console.error('Recorder is not initialized.');
+      return;
+    }
+
+    try {
+      await recorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Error starting recording:', error);
+    }
+  };
+
+  // Detiene la grabación y procesa el audio
+  const stopRecording = async () => {
+    if (!recorder) return;
+
+    try {
+      const { blob } = await recorder.stop();
+      setAudioBlob(blob);
+      console.log('Recorded audio blob:', blob);
+      processAudio(blob);
+    } catch (error) {
+      console.error('Error stopping recording:', error);
+    } finally {
+      setIsRecording(false);
+    }
+  };
+
+  // Procesa el audio grabado y lo envía a Whisper para transcripción
+  const processAudio = async (blob: Blob) => {
+    if (!blob) {
+      console.error('No audio blob available.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', blob);
+    formData.append('model', 'whisper-1');
+    formData.append('language', 'es'); // Forzar a que Whisper transcriba en español
+
+    setIsProcessing(true);
+
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/audio/transcriptions',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY_CHAT}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      let transcript = response.data.text;
+      console.log('Whisper response before cleaning:', transcript);
+
+      // Limpiar caracteres no deseados
+      transcript = transcript.replace(/[¿?!¡]/g, '');
+      console.log('Whisper response after cleaning:', transcript);
+
+      setTranscription(transcript);
+      onRecognize(transcript); // Enviar el texto limpio al componente padre
+      onClose(); // Cerrar el modal después de procesar
+    } catch (error) {
+      console.error('Error during transcription:', error.response?.data || error.message);
+      setTranscription(
+        `Error al transcribir el audio. Detalles: ${error.response?.data?.error?.message || 'Unknown error'}`
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -83,37 +136,38 @@ const VoiceRecognitionModal: React.FC<VoiceRecognitionModalProps> = ({
           <div className="bg-[var(--cards-background)] border border-6 rounded-lg shadow-lg p-6 w-96">
             <h2 className="text-xl font-bold mb-4">Voice Recognition</h2>
             <p className="mb-4">
-              Click the button below and start speaking to recognize your voice.
+              Hold the button below to record and release to transcribe your voice.
             </p>
             <div className="flex flex-col items-center">
               <Button
-                onClick={listening ? stopListening : startListening}
+                onMouseDown={startRecording}
+                onMouseUp={stopRecording}
                 className={`rounded-lg px-4 py-2 ${
-                  listening ? 'bg-red-200' : 'bg-blue-500 text-white'
+                  isRecording ? 'bg-red-500 text-white' : 'bg-blue-500 text-white'
                 }`}
+                disabled={isProcessing}
               >
-                {listening ? 'Listening...' : 'Start Recognition'}
+                {isRecording ? 'Recording...' : 'Hold to Record'}
               </Button>
-              {unsupported && (
-                <p className="text-red-500 mt-4">
-                  Your browser does not support speech recognition.
-                </p>
-              )}
               {micPermissionDenied && (
                 <p className="text-red-500 mt-4">
                   Microphone permissions are required to use this feature.
                 </p>
               )}
-              {transcript && (
+              {isProcessing && (
+                <p className="text-gray-500 mt-4">Processing audio...</p>
+              )}
+              {transcription && (
                 <p className="mt-4 text-gray-700 text-center">
-                  Recognized Text: <strong>{transcript}</strong>
+                  Transcribed Text: <strong>{transcription}</strong>
                 </p>
               )}
               <Button
                 variant="outline"
                 className="mt-4"
                 onClick={() => {
-                  resetTranscript();
+                  setTranscription('');
+                  setAudioBlob(null);
                   onClose();
                 }}
               >
