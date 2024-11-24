@@ -33,6 +33,19 @@ export default function Pokedex() {
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('list');
 
+  const [selectedPokemon, setSelectedPokemon] = useState<any | null>(null);
+  const [isPokemonModalOpen, setIsPokemonModalOpen] = useState(false);
+
+  const openPokemonModal = (pokemon: any) => {
+    setSelectedPokemon(pokemon);
+    setIsPokemonModalOpen(true);
+  };
+
+  const closePokemonModal = () => {
+    setSelectedPokemon(null);
+    setIsPokemonModalOpen(false);
+  };
+
   const specialImageUrl =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNTOGFBPoc4jlP9M1HrOe8AAQyzAy9NGVGZQ&s';
   const specialImageUrl2 =
@@ -43,37 +56,37 @@ export default function Pokedex() {
     if (storedTeamId) {
       setTeamId(storedTeamId);
     } else {
-      setIsLoginModalOpen(true);
+      setIsLoginModalOpen(true); 
     }
   }, []);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = async () => {
-    if (inputTeamId.trim()) {
-      try {
-        const response = await fetch(`https://hackeps-poke-backend.azurewebsites.net/teams/${inputTeamId.trim()}`);
-        if (!response.ok) {
-          throw new Error('Team not found');
-        }
-
-        const teamData = await response.json(); // Optional: usar si necesitas datos del equipo
-        console.log('Team data retrieved:', teamData);
-
-        localStorage.setItem('teamId', inputTeamId.trim());
-        setTeamId(inputTeamId.trim());
-        setInputTeamId('');
-        setIsLoginModalOpen(false);
-        setErrorMessage(null); // Clear any previous errors
-      } catch (error) {
-        console.error('Error fetching team:', error);
-        setErrorMessage('Team ID is invalid. Please try again.');
+const handleLogin = async () => {
+  if (inputTeamId.trim()) {
+    try {
+      const response = await fetch(`https://hackeps-poke-backend.azurewebsites.net/teams/${inputTeamId.trim()}`);
+      if (!response.ok) {
+        throw new Error('Team not found');
       }
-    } else {
-      setErrorMessage('Team ID cannot be empty.');
-    }
-  };
 
+      const teamData = await response.json(); // Optional: usar si necesitas datos del equipo
+      console.log('Team data retrieved:', teamData);
+
+      localStorage.setItem('teamId', inputTeamId.trim());
+      setTeamId(inputTeamId.trim());
+      setInputTeamId('');
+      setIsLoginModalOpen(false);
+      setErrorMessage(null); // Clear any previous errors
+    } catch (error) {
+      console.error('Error fetching team:', error);
+      setErrorMessage('Team ID is invalid. Please try again.');
+    }
+  } else {
+    setErrorMessage('Team ID cannot be empty.');
+  }
+};
+  
 
   const handleLogout = () => {
     localStorage.removeItem('teamId');
@@ -204,32 +217,92 @@ export default function Pokedex() {
 
   return (
 
-
+    
 
 
 
     <Card className="w-full h-[90vh] max-w-4xl mx-auto bg-[#fffaf2] shadow-xl rounded-lg overflow-hidden">
-      <Dialog open={isLoginModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Login</DialogTitle>
-            <DialogDescription>Enter your Team ID to continue.</DialogDescription>
-          </DialogHeader>
-          <Input
-            value={inputTeamId}
-            onChange={(e) => setInputTeamId(e.target.value)}
-            placeholder="Enter your Team ID"
-          />
-          {errorMessage && (
-            <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
-          )}
-          <div className="flex justify-end mt-4">
-            <Button onClick={handleLogin}>Login</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+{/* Pokémon Details Modal */}
+<Dialog open={isPokemonModalOpen} onOpenChange={setIsPokemonModalOpen}>
+  <DialogContent className="sm:max-w-[600px]">
+    <DialogHeader>
+      <DialogTitle>{selectedPokemon?.name}</DialogTitle>
+      <DialogDescription>ID: {selectedPokemon?.id}</DialogDescription>
+    </DialogHeader>
+    {selectedPokemon && (
+      <div>
+        <img
+          src={selectedPokemon.image}
+          alt={selectedPokemon.name}
+          className="w-full max-h-[200px] object-contain mb-4"
+        />
+        <p>
+          <strong>Type:</strong>{' '}
+          {selectedPokemon.types
+            ?.map((type: { type: { name: string } }) => type.type.name)
+            .join(', ') || 'Unknown'}
+        </p>
+        <p>
+          <strong>Height:</strong> {selectedPokemon.height || 'Unknown'}
+        </p>
+        <p>
+          <strong>Weight:</strong> {selectedPokemon.weight || 'Unknown'}
+        </p>
+        <p>
+          <strong>Abilities:</strong>{' '}
+          {selectedPokemon.abilities
+            ?.map((ability: { ability: { name: string } }) => ability.ability.name)
+            .join(', ') || 'Unknown'}
+        </p>
+        {selectedPokemon.evolves_to && (
+          <p>
+            <strong>Evolves To:</strong>{' '}
+            {Array.isArray(selectedPokemon.evolves_to)
+              ? selectedPokemon.evolves_to.map((evolution: { name: string }) => evolution.name).join(', ')
+              : selectedPokemon.evolves_to?.name || 'None'}
+          </p>
+        )}
+        <p>
+          <strong>Captured Count:</strong> {pokemonCounts[selectedPokemon.id] || 0}
+        </p>
+        <p>
+          <strong>Fun Fact:</strong> No hay fun fact
+        </p>
+      </div>
+    )}
+    <div className="mt-4 flex justify-end">
+      <Button
+        onClick={closePokemonModal}
+        className="bg-red-500 text-white hover:bg-red-600"
+      >
+        Close
+      </Button>
+    </div>
+  </DialogContent>
+</Dialog>
 
 
+<Dialog open={isLoginModalOpen}>
+  <DialogContent className="sm:max-w-[425px]">
+    <DialogHeader>
+      <DialogTitle>Login</DialogTitle>
+      <DialogDescription>Enter your Team ID to continue.</DialogDescription>
+    </DialogHeader>
+    <Input
+      value={inputTeamId}
+      onChange={(e) => setInputTeamId(e.target.value)}
+      placeholder="Enter your Team ID"
+    />
+    {errorMessage && (
+      <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+    )}
+    <div className="flex justify-end mt-4">
+      <Button onClick={handleLogin}>Login</Button>
+    </div>
+  </DialogContent>
+</Dialog>
+
+        
       <AIAssistant isOpen={isAIAssistantOpen} onClose={() => setIsAIAssistantOpen(false)} />
       <CardContent className="p-6">
         <div className="flex flex-col items-center md:flex-row md:justify-between mb-4">
@@ -258,7 +331,7 @@ export default function Pokedex() {
             >
               <Bot size={24} className="text-red-500" />
             </Button>
-
+          
             <Button
               variant="outline"
               size="icon"
@@ -269,7 +342,7 @@ export default function Pokedex() {
             </Button>
           </div>
         </div>
-
+  
         <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
           <TabsList className="flex md:grid md:grid-cols-4 justify-between items-center w-full mb-4 bg-[#d7d7d7] h-[40px] md:h-[55px] p-2">
             <TabsTrigger
@@ -301,7 +374,7 @@ export default function Pokedex() {
               <span className="hidden md:inline">Torneos</span>
             </TabsTrigger>
           </TabsList>
-
+  
           {['list', 'grid'].includes(activeTab) && (
             <div className="mb-6">
               <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
@@ -329,108 +402,101 @@ export default function Pokedex() {
                   </select>
                 </div>
               </div>
-              <div className="flex justify-center align-centerflex  items-center gap-4">
+              <div className="flex justify-center align-centerflex justify-center items-center gap-4">
                 <Button
                   variant="outline"
-
+                  
                   onClick={evolveAll}
                   className="rounded-lg border-2 border-green-500 hover:bg-green-100 bg-white/90 text-green-500 w-[100%] h-[80%] "
                 >
                   Evolve All
                 </Button>
                 <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setIsModalOpen(true)}
-                  className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90 "
-                >
-                  <Mic size={24} className="text-red-500" />
-                </Button>
-                <VoiceRecognitionModal
-                  isOpen={isModalOpen}
-                  onClose={() => setIsModalOpen(false)}
-                  onRecognize={handleRecognize}
-                />
+              variant="outline"
+              size="icon"
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-lg border-2 border-borderButtons hover:bg-yellow-100 bg-white/90 "
+            >
+              <Mic size={24} className="text-red-500" />
+            </Button>
+            <VoiceRecognitionModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onRecognize={handleRecognize}
+            />
               </div>
             </div>
           )}
-
+          
+  
           <TabsContent value="list">
-            {activeTab === 'list' && (
-              <div className="overflow-y-auto h-[60vh]">
-                {filteredPokemons.length > 0 ? (
-                  filteredPokemons.map((pokemon) => (
-                    <div
-                      key={pokemon.id}
-                      className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray"
-                    >
-                      <div className="flex items-center">
-                        {pokemon.image && (
-                          <img
-                            src={pokemon.image}
-                            alt={pokemon.name}
-                            className="w-16 h-16 object-contain mr-4"
-                          />
-                        )}
-                        <div>
-                          <h2 className="text-lg font-bold">{pokemon.name}</h2>
-                          <p>ID: {pokemon.id}</p>
-                          <p>Count: {pokemonCounts[pokemon.id]}</p>
-                        </div>
-                      </div>
-                      {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => evolvePokemon(pokemon.id)}
-                          className="text-green-500 border-green-500 hover:bg-green-100"
-                        >
-                          Evolve
-                        </Button>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <p>No Pokémon found.</p>
-                )}
-              </div>
+  {activeTab === 'list' && (
+    <div className="overflow-y-auto h-[60vh]">
+      {filteredPokemons.map((pokemon) => (
+        <div
+          key={pokemon.id}
+          onClick={() => openPokemonModal(pokemon)}
+          className="p-4 bg-gray-100 rounded-lg mb-2 flex items-center justify-between hover:shadow-lg transition-shadow hover:border-2 hover:border-gray cursor-pointer"
+        >
+          <div className="flex items-center">
+            {pokemon.image && (
+              <img
+                src={pokemon.image}
+                alt={pokemon.name}
+                className="w-16 h-16 object-contain mr-4"
+              />
             )}
-          </TabsContent>
+            <div>
+              <h2 className="text-lg font-bold">{pokemon.name}</h2>
+              <p>ID: {pokemon.id}</p>
+              <p>Count: {pokemonCounts[pokemon.id]}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</TabsContent>
 
-          <TabsContent value="grid">
-            {activeTab === 'grid' && (
-              <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[58vh]">
-                {filteredPokemons.map((pokemon) => (
-                  <div
-                    key={pokemon.id}
-                    className="p-4 bg-gray-100 rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow"
-                  >
-                    {pokemon.image && (
-                      <img
-                        src={pokemon.image}
-                        alt={pokemon.name}
-                        className="w-20 h-20 object-contain mb-2"
-                      />
-                    )}
-                    <h2 className="text-lg font-bold">{pokemon.name}</h2>
-                    <p>ID: {pokemon.id}</p>
-                    <p>Count: {pokemonCounts[pokemon.id]}</p>
-                    {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => evolvePokemon(pokemon.id)}
-                        className="text-green-500 border-green-500 hover:bg-green-100 mt-2"
-                      >
-                        Evolve
-                      </Button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
+<TabsContent value="grid">
+  {activeTab === 'grid' && (
+    <div className="grid grid-cols-2 gap-4 overflow-y-auto h-[58vh]">
+      {filteredPokemons.map((pokemon) => (
+        <div
+          key={pokemon.id}
+          onClick={() => openPokemonModal(pokemon)}
+          className="p-4 bg-gray-100 rounded-lg flex items-center flex-col hover:shadow-lg transition-shadow cursor-pointer"
+        >
+          {pokemon.image && (
+            <img
+              src={pokemon.image}
+              alt={pokemon.name}
+              className="w-20 h-20 object-contain mb-2"
+            />
+          )}
+          <h2 className="text-lg font-bold">{pokemon.name}</h2>
+          <p>ID: {pokemon.id}</p>
+          <p>Count: {pokemonCounts[pokemon.id]}</p>
+          {pokemonCounts[pokemon.id] >= 3 && pokemon.evolves_to && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation(); // Evitar que abra el modal al hacer clic en el botón.
+                evolvePokemon(pokemon.id);
+              }}
+              className="text-green-500 border-green-500 hover:bg-green-100 mt-2"
+            >
+              Evolve
+            </Button>
+          )}
+        </div>
+      ))}
+    </div>
+  )}
+</TabsContent>
 
+  
           <TabsContent value="team">
             {activeTab === 'team' && <TeamManagement />}
           </TabsContent>
@@ -441,5 +507,5 @@ export default function Pokedex() {
       </CardContent>
     </Card>
   );
-
+  
 }
