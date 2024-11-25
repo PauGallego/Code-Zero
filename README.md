@@ -3,7 +3,7 @@
 En este proyecto hemos hecho una Pokédex, partiendo como base de una API que nos ofrece la capacidad de capturar Pokémon y almacenarlos por zonas relacionadas a un equipo, para después participar en torneos Pokémon.
 
 
-### Abrir página web
+### Deploy
 
 * [Página web de muestra](https://code-zero-y72m.vercel.app/)
 
