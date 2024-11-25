@@ -1,4 +1,4 @@
-# Pokedex 2.0 por Code-Zero
+# Pokedex 2.0 by Code-Zero Team
 
 En este proyecto hemos hecho una Pokédex, partiendo como base de una API que nos ofrece la capacidad de capturar Pokémon y almacenarlos por zonas relacionadas a un equipo, para después participar en torneos Pokémon.
 
