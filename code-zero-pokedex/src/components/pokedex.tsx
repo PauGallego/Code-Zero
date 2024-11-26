@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { QrCode, Mic, Search, Bot, List, Grid, LogOut, Sword, Map,  ComputerIcon } from 'lucide-react';
+import { QrCode, Mic, Search, Bot, List, Grid, LogOut, Sword, Map, ComputerIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import RivalAnalysis from './rival-analysis';
 import TeamManagement from './team-management';
@@ -347,39 +347,35 @@ export default function Pokedex() {
         </DialogContent>
       </Dialog>
       <Dialog open={isLoginModalOpen}>
-  {isLoginModalOpen && (
-    <div
-      className="fixed inset-0 bg-cover bg-center z-40"
-      style={{
-        backgroundImage: "url('/pokeball.jpg')", // Ruta de la imagen en 'publico'
-      }}
-    ></div>
-  )}
-  <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)] z-50  mx-auto">
-    <DialogHeader>
-      <DialogTitle>Login</DialogTitle>
-      <DialogDescription>Introduce tu ID de equipo</DialogDescription>
-    </DialogHeader>
-    <Input
-      value={inputTeamId}
-      onChange={(e) => setInputTeamId(e.target.value)}
-      placeholder="Introduce tu ID de equipo"
-    />
-    {errorMessage && (
-      <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
-    )}
-    <div className="flex justify-end mt-4">
-      <Button
-        onClick={() => {
-          handleLogin(); // Tu función de login
-          setIsLoginModalOpen(false); // Cierra el modal al loguear
-        }}
-      >
-        Login
-      </Button>
-    </div>
-  </DialogContent>
-</Dialog>
+        {isLoginModalOpen && (
+          <div
+            className="fixed inset-0 bg-cover bg-center z-40"
+            style={{
+              backgroundImage: "url('/pokeball.jpg')", // Ruta de la imagen en 'publico'
+            }}
+          ></div>
+        )}
+        <DialogContent className="sm:max-w-[425px] bg-[var(--cards-background-modal)] z-50  mx-auto">
+          <DialogHeader>
+            <DialogTitle>Login</DialogTitle>
+            <DialogDescription>Introduce tu ID de equipo</DialogDescription>
+          </DialogHeader>
+          <Input
+            value={inputTeamId}
+            onChange={(e) => setInputTeamId(e.target.value)}
+            placeholder="Introduce tu ID de equipo"
+          />
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+          )}
+          <div className="flex justify-end mt-4">
+            <Button
+              onClick={handleLogin}>
+              Login
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
 
 
